@@ -9,6 +9,10 @@ holds only build output and flows. No build carries a service URL or a key: both
 ```
 .
 ├── manifest.json            # every published build: app id, stack, artifact, ABIs, size, sha256, source commit
+├── .github/workflows/
+│   └── simulate.yml         # run the flows on emulators against the live services
+├── scripts/
+│   └── simulate.sh          # install one app, loop its flows in random order for N minutes
 └── apps/
     └── <app>/
         ├── android/<app>.apk  # x86_64 release build, debug-signed, for emulators only
@@ -27,6 +31,41 @@ holds only build output and flows. No build carries a service URL or a key: both
 
 `shopper` also ships an iOS build. iOS builds come from the private repo's `mobile-ios` workflow (macOS runner); an
 app's `ios/` folder appears once a build has been fetched.
+
+## Running a simulation
+
+`simulate` runs one Android emulator per app (x86_64 `google_apis`, Pixel 7, KVM on `ubuntu-latest`), installs the
+committed APK and loops that app's flows in random order for the given minutes against `OC_BASE_URL`
+(`https://<base>/<service>-service`). A flow that fails because the emulator dropped the device is retried once; any
+other failure is recorded as a result, since backend errors and chaos are part of the simulation. The job summary lists
+every flow run, and the Maestro output (with failure screenshots) is kept as the `maestro-<app>` artifact for 7 days.
+
+```bash
+gh workflow run simulate.yml -f apps="shopper warehouse" -f duration=30            # manual
+gh api repos/<owner>/oc-mobile-workflows/dispatches \
+  -f event_type=simulate -F client_payload[apps]="courier" -F client_payload[duration]=15   # what the control panel sends
+```
+
+| Input / payload key | Default | Meaning |
+|---|---|---|
+| `apps` | `shopper warehouse courier manager` | apps to run, one emulator each, in parallel |
+| `duration` | `30` | minutes of flows per app (1–300) |
+| `include_failures` | `true` | also run the deliberate-failure flows (backend errors, slow screens, crashes) |
+| `flows` | all | regex on the flow path, e.g. `journeys/` or `checkout|browse` |
+| `api_level` | `35` | emulator API level (35, 34 or 33) |
+
+Repository settings:
+
+| Name | Kind | Required | Value |
+|---|---|---|---|
+| `MAESTRO_SEED_PASSWORD` | secret | yes | password of the seeded users the flows sign in as |
+| `ATATUS_LICENSE_KEY` | secret | for RUM | turns Atatus mobile RUM on in shopper and warehouse; without it they still drive the backend |
+| `OC_BASE_URL` | variable | no | default `https://qa.atatus.com` |
+| `ATATUS_SITE` | variable | no | `us`, `in` (default) or `eu` |
+| `ATATUS_SERVER_URL` | variable | no | overrides the site's intake URL |
+| `ATATUS_ENV` | variable | no | environment tag, default `simulation` |
+
+Courier and manager have no Atatus SDK; they only generate backend traffic.
 
 ## Updating
 

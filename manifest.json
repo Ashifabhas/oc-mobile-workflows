@@ -11,8 +11,8 @@
           "bytes": 21075378,
           "sha256": "023f7a73c3bb419f4cb05ae44c750d14bc6c904ee7e867b32542ecaa3b0e9a95",
           "built_at": "2026-10-15T01:29:18Z",
-          "source_commit": "c2405598e53b24dae5ffeff286d040374b9e73ee",
-          "source_dirty": false,
+          "source_commit": "fc5b6251476f63e37e1d87c25ae4154d1f70acf8",
+          "source_dirty": true,
           "abis": [
             "x86_64"
           ]

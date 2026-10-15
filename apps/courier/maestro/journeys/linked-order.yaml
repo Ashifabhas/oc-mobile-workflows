@@ -30,8 +30,9 @@ name: Open a shipment's linked order
     timeout: 20000
 - tapOn:
     id: "nav.back"
+# Back lands on the shipment still scrolled to the order button; the status pill is above the fold.
 - extendedWaitUntil:
     visible:
-      id: "shipment.status"
+      id: "shipment.order"
     timeout: 15000
 - runFlow: ../common/flush.yaml
