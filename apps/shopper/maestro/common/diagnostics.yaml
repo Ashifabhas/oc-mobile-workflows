@@ -1,0 +1,16 @@
+appId: com.atatus.oc.shopper
+---
+- runFlow: launch.yaml
+- runFlow: login.yaml
+- tapOn:
+    id: "nav.account"
+- scrollUntilVisible:
+    element:
+      id: "profile.version"
+    direction: DOWN
+- longPressOn:
+    id: "profile.version"
+- extendedWaitUntil:
+    visible:
+      id: "diag.result"
+    timeout: 10000

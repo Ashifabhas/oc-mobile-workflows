@@ -1,0 +1,7 @@
+appId: com.atatus.oc.warehouse
+---
+# Maestro has no sleep: an optional wait for text that never appears holds the app open while the SDK uploads.
+- extendedWaitUntil:
+    visible: "__never_rendered__"
+    timeout: 10000
+    optional: true

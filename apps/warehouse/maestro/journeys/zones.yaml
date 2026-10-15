@@ -1,0 +1,30 @@
+appId: com.atatus.oc.warehouse
+name: Browse warehouse zones
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/login.yaml
+- tapOn:
+    id: "tab.zones"
+- extendedWaitUntil:
+    visible:
+      id: "zone.row"
+    timeout: 20000
+- tapOn:
+    id: "zones.filter.(?!all).+"
+    index: 0
+    optional: true
+- extendedWaitUntil:
+    visible:
+      id: "zone.row"
+    timeout: 15000
+- tapOn:
+    id: "zone.row"
+    index: 0
+- extendedWaitUntil:
+    visible:
+      id: "zone.utilisation"
+    timeout: 15000
+- back
+- tapOn:
+    id: "zones.filter.all"
+- runFlow: ../common/flush.yaml

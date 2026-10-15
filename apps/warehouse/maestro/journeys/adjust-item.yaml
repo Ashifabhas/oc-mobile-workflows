@@ -1,0 +1,41 @@
+appId: com.atatus.oc.warehouse
+name: Adjust an item's reorder threshold
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/login.yaml
+- tapOn:
+    id: "tab.lookup"
+- tapOn:
+    id: "lookup.query"
+# Exact seeded names: every seeded product has an inventory record, simulator-created ones may not.
+- inputText: ${['Thermal Base Layer', 'Adjustable Dumbbell Set', 'Bamboo Toothbrush Set', 'Microfiber Detailing Kit', 'Hardcover Dot Grid Notebook'][Math.floor(Math.random() * 5)]}
+- tapOn:
+    id: "lookup.search"
+- extendedWaitUntil:
+    visible:
+      id: "lookup.row|lookup.empty"
+    timeout: 15000
+- runFlow:
+    when:
+      visible:
+        id: "lookup.row"
+    commands:
+      - tapOn:
+          id: "lookup.row"
+          index: 0
+      - extendedWaitUntil:
+          visible:
+            id: "item.threshold"
+          timeout: 15000
+      - tapOn:
+          id: "item.adjust"
+      - tapOn:
+          id: "adjust.threshold"
+      - eraseText: 5
+      - inputText: ${String(Math.floor(Math.random() * 21) + 10)}
+      - tapOn:
+          id: "adjust.save"
+      - extendedWaitUntil:
+          visible: "Updated.*|Failed.*"
+          timeout: 15000
+- runFlow: ../common/flush.yaml

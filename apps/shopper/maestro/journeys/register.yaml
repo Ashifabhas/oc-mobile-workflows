@@ -1,0 +1,40 @@
+appId: com.atatus.oc.shopper
+name: Create an account
+---
+- runFlow: ../common/launch.yaml
+- tapOn:
+    id: "nav.account"
+- runFlow:
+    when:
+      visible:
+        id: "account.signout"
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: "account.signout"
+          direction: DOWN
+      - tapOn:
+          id: "account.signout"
+      - extendedWaitUntil:
+          visible:
+            id: "home.ready"
+          timeout: 15000
+      - tapOn:
+          id: "nav.account"
+- tapOn: "Create an account"
+- tapOn: "Full name"
+- inputText: ${['Meera Pillai', 'Arjun Rao', 'Kavya Menon', 'Nikhil Shah', 'Priya Das'][Math.floor(Math.random() * 5)]}
+- tapOn: "Email"
+- inputText: ${'shopper.' + Date.now() + '@example.test'}
+- tapOn: "Password"
+- inputText: ${MAESTRO_SEED_PASSWORD}
+- tapOn: "Confirm password"
+- inputText: ${MAESTRO_SEED_PASSWORD}
+- hideKeyboard
+- tapOn:
+    id: "register.submit"
+- extendedWaitUntil:
+    visible:
+      id: "account.signout"
+    timeout: 20000
+- runFlow: ../common/flush.yaml

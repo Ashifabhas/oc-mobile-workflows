@@ -1,0 +1,7 @@
+appId: com.atatus.oc.manager
+---
+# Maestro has no sleep: an optional wait for text that never appears holds the app open while the last requests finish.
+- extendedWaitUntil:
+    visible: "__never_rendered__"
+    timeout: 5000
+    optional: true

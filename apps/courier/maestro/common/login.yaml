@@ -1,0 +1,27 @@
+appId: com.atatus.oc.courier
+---
+- evalScript: ${output.courier = ['divya.krishnan', 'rohan.iyer', 'sana.qureshi', 'vikram.nair'][Math.floor(Math.random() * 4)] + '@observablecommerce.local'}
+- runFlow:
+    when:
+      visible:
+        id: "tab.account"
+    commands:
+      - tapOn:
+          id: "tab.account"
+      - tapOn:
+          id: "account.signout"
+- tapOn:
+    id: "login.email"
+- inputText: ${output.courier}
+- tapOn:
+    id: "login.password"
+- inputText: ${MAESTRO_SEED_PASSWORD}
+# Tapping the brand panel dismisses the keyboard the same way on Android and iOS; hideKeyboard is unreliable on iOS.
+- tapOn:
+    id: "login.brand"
+- tapOn:
+    id: "login.submit"
+- extendedWaitUntil:
+    visible:
+      id: "tab.queue"
+    timeout: 20000

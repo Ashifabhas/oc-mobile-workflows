@@ -1,0 +1,12 @@
+appId: com.atatus.oc.courier
+---
+- runFlow: launch.yaml
+- runFlow: login.yaml
+- tapOn:
+    id: "tab.account"
+- longPressOn:
+    id: "account.version"
+- extendedWaitUntil:
+    visible:
+      id: "diag.result"
+    timeout: 10000

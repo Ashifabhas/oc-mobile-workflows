@@ -1,0 +1,15 @@
+appId: com.atatus.oc.courier
+name: Backend errors (HTTP 500 and 404)
+---
+- runFlow: ../common/diagnostics.yaml
+- tapOn:
+    id: "diag.http_500"
+- extendedWaitUntil:
+    visible: "Backend error: HTTP 5.*"
+    timeout: 15000
+- tapOn:
+    id: "diag.http_404"
+- extendedWaitUntil:
+    visible: "Missing parcel: HTTP 404"
+    timeout: 15000
+- runFlow: ../common/flush.yaml

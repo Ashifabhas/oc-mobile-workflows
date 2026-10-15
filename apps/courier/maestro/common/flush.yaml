@@ -1,0 +1,7 @@
+appId: com.atatus.oc.courier
+---
+# Kept for symmetry with the instrumented apps: Maestro has no sleep, so an optional wait holds the app open.
+- extendedWaitUntil:
+    visible: "__never_rendered__"
+    timeout: 10000
+    optional: true

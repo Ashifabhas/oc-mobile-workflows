@@ -1,0 +1,41 @@
+appId: com.atatus.oc.manager
+name: Review the store overview and open a most-viewed product
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/login.yaml
+- tapOn:
+    id: "tab.dashboard"
+- extendedWaitUntil:
+    visible:
+      id: "dashboard.total_events"
+    timeout: 20000
+- scrollUntilVisible:
+    element:
+      id: "dashboard.top_product|dashboard.no_views"
+    direction: DOWN
+    timeout: 15000
+- runFlow:
+    when:
+      visible:
+        id: "dashboard.top_product"
+    commands:
+      - tapOn:
+          id: "dashboard.top_product"
+          index: 0
+      - extendedWaitUntil:
+          visible:
+            id: "product.name"
+          timeout: 15000
+      - tapOn:
+          id: "nav.back"
+- extendedWaitUntil:
+    visible:
+      id: "dashboard.refresh"
+    timeout: 10000
+- tapOn:
+    id: "dashboard.refresh"
+- extendedWaitUntil:
+    visible:
+      id: "dashboard.total_events"
+    timeout: 20000
+- runFlow: ../common/flush.yaml

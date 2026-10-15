@@ -1,0 +1,19 @@
+appId: com.atatus.oc.courier
+name: Compare carriers
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/login.yaml
+- tapOn:
+    id: "tab.carriers"
+- extendedWaitUntil:
+    visible:
+      id: "carrier.row"
+    timeout: 20000
+- tapOn:
+    id: "carrier.row"
+    index: ${Math.floor(Math.random() * 4)}
+- extendedWaitUntil:
+    visible:
+      id: "carrier.detail"
+    timeout: 5000
+- runFlow: ../common/flush.yaml

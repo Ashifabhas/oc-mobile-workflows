@@ -1,0 +1,24 @@
+appId: com.atatus.oc.manager
+name: Run an analytics report over a date range
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/login.yaml
+- tapOn:
+    id: "tab.reports"
+- evalScript: ${output.report = ['daily', 'user_engagement', 'product_performance'][Math.floor(Math.random() * 3)]}
+- evalScript: ${output.range = ['7', '30', '90'][Math.floor(Math.random() * 3)]}
+- tapOn:
+    id: ${'report.type.' + output.report}
+- tapOn:
+    id: ${'report.range.' + output.range}
+- extendedWaitUntil:
+    visible:
+      id: "report.row|report.empty"
+    timeout: 20000
+- tapOn:
+    id: "report.type.daily"
+- extendedWaitUntil:
+    visible:
+      id: "report.summary"
+    timeout: 20000
+- runFlow: ../common/flush.yaml

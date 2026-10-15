@@ -1,0 +1,15 @@
+appId: com.atatus.oc.warehouse
+---
+- launchApp:
+    arguments:
+      USER_SERVICE_URL: ${MAESTRO_USER_SERVICE_URL}
+      PRODUCT_SERVICE_URL: ${MAESTRO_PRODUCT_SERVICE_URL}
+      INVENTORY_SERVICE_URL: ${MAESTRO_INVENTORY_SERVICE_URL}
+      ATATUS_LICENSE_KEY: ${MAESTRO_ATATUS_LICENSE_KEY}
+      ATATUS_SITE: ${MAESTRO_ATATUS_SITE}
+      ATATUS_SERVER_URL: ${MAESTRO_ATATUS_SERVER_URL}
+      ATATUS_ENV: ${MAESTRO_ATATUS_ENV}
+- extendedWaitUntil:
+    visible:
+      id: "login.submit|tab.low-stock"
+    timeout: 30000

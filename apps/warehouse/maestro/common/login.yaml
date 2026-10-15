@@ -1,0 +1,25 @@
+appId: com.atatus.oc.warehouse
+---
+- evalScript: ${output.staff = ['aarav.mehta', 'divya.krishnan', 'rohan.iyer'][Math.floor(Math.random() * 3)] + '@observablecommerce.local'}
+- runFlow:
+    when:
+      visible:
+        id: "tab.account"
+    commands:
+      - tapOn:
+          id: "tab.account"
+      - tapOn:
+          id: "account.signout"
+- tapOn:
+    id: "login.email"
+- inputText: ${output.staff}
+- tapOn:
+    id: "login.password"
+- inputText: ${MAESTRO_SEED_PASSWORD}
+- hideKeyboard
+- tapOn:
+    id: "login.submit"
+- extendedWaitUntil:
+    visible:
+      id: "tab.low-stock"
+    timeout: 20000

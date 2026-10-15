@@ -1,0 +1,37 @@
+appId: com.atatus.oc.courier
+name: Open a shipment's linked order
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/login.yaml
+- tapOn:
+    id: "tab.queue"
+- tapOn:
+    id: "queue.filter.all"
+- extendedWaitUntil:
+    visible:
+      id: "queue.row"
+    timeout: 20000
+- tapOn:
+    id: "queue.row"
+    index: ${Math.floor(Math.random() * 3)}
+- extendedWaitUntil:
+    visible:
+      id: "shipment.status"
+    timeout: 15000
+- scrollUntilVisible:
+    element:
+      id: "shipment.order"
+    direction: DOWN
+- tapOn:
+    id: "shipment.order"
+- extendedWaitUntil:
+    visible:
+      id: "order.status|order.error"
+    timeout: 20000
+- tapOn:
+    id: "nav.back"
+- extendedWaitUntil:
+    visible:
+      id: "shipment.status"
+    timeout: 15000
+- runFlow: ../common/flush.yaml

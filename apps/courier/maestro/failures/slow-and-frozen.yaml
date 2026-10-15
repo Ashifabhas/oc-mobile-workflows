@@ -1,0 +1,18 @@
+appId: com.atatus.oc.courier
+name: Slow screen and frozen UI
+---
+- runFlow: ../common/diagnostics.yaml
+- tapOn:
+    id: "diag.slow_screen"
+- extendedWaitUntil:
+    visible:
+      id: "slow.loaded"
+    timeout: 15000
+- tapOn:
+    id: "nav.back"
+- tapOn:
+    id: "diag.freeze"
+- extendedWaitUntil:
+    visible: "UI thread was blocked for 6s"
+    timeout: 30000
+- runFlow: ../common/flush.yaml

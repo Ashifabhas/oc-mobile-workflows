@@ -1,0 +1,14 @@
+appId: com.atatus.oc.shopper
+name: Native crash
+---
+- runFlow: ../common/diagnostics.yaml
+- scrollUntilVisible:
+    element:
+      id: "diag.native_crash"
+    direction: DOWN
+- tapOn:
+    id: "diag.native_crash"
+- assertNotVisible: "Diagnostics"
+# The SDK uploads a crash report on the next launch, not as the process dies.
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/flush.yaml

@@ -1,0 +1,52 @@
+appId: com.atatus.oc.courier
+name: Work the queue (pick up a parcel and start the route)
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/login.yaml
+- tapOn:
+    id: "tab.queue"
+- tapOn:
+    id: "queue.filter.pickup"
+- extendedWaitUntil:
+    visible:
+      id: "queue.row|queue.empty"
+    timeout: 20000
+- runFlow:
+    when:
+      visible:
+        id: "queue.row"
+    commands:
+      - tapOn:
+          id: "queue.row"
+          index: 0
+      - extendedWaitUntil:
+          visible:
+            id: "shipment.status"
+          timeout: 15000
+      - runFlow:
+          when:
+            visible:
+              id: "shipment.action.dispatched"
+          commands:
+            - tapOn:
+                id: "shipment.action.dispatched"
+            - extendedWaitUntil:
+                visible: "Status set to picked up|Update failed.*"
+                timeout: 20000
+      - runFlow:
+          when:
+            visible:
+              id: "shipment.action.in_transit"
+          commands:
+            - tapOn:
+                id: "shipment.action.in_transit"
+            - extendedWaitUntil:
+                visible: "Status set to in transit|Update failed.*"
+                timeout: 20000
+      - tapOn:
+          id: "nav.back"
+      - extendedWaitUntil:
+          visible:
+            id: "queue.row|queue.empty"
+          timeout: 20000
+- runFlow: ../common/flush.yaml

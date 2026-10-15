@@ -1,0 +1,41 @@
+appId: com.atatus.oc.shopper
+---
+- evalScript: ${output.shopper = ['divya.krishnan', 'rohan.iyer', 'sana.qureshi', 'vikram.nair'][Math.floor(Math.random() * 4)] + '@observablecommerce.local'}
+- tapOn:
+    id: "nav.account"
+- runFlow:
+    when:
+      visible:
+        id: "account.signout"
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: "account.signout"
+          direction: DOWN
+      - tapOn:
+          id: "account.signout"
+      - extendedWaitUntil:
+          visible:
+            id: "home.ready"
+          timeout: 15000
+      - tapOn:
+          id: "nav.account"
+- tapOn:
+    id: "account.signin"
+- tapOn: "Email"
+- inputText: ${output.shopper}
+- tapOn: "Password"
+- inputText: ${MAESTRO_SEED_PASSWORD}
+- hideKeyboard
+- tapOn:
+    id: "login.submit"
+- extendedWaitUntil:
+    visible:
+      id: "account.signout"
+    timeout: 20000
+- tapOn:
+    id: "nav.home"
+- extendedWaitUntil:
+    visible:
+      id: "home.ready"
+    timeout: 15000

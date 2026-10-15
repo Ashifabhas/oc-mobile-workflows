@@ -1,0 +1,15 @@
+appId: com.atatus.oc.warehouse
+name: Handled error and logs
+---
+- runFlow: ../common/diagnostics.yaml
+- tapOn:
+    id: "diag.handled_error"
+- extendedWaitUntil:
+    visible: "Handled error reported"
+    timeout: 10000
+- tapOn:
+    id: "diag.logs"
+- extendedWaitUntil:
+    visible: "Sent 3 logs"
+    timeout: 10000
+- runFlow: ../common/flush.yaml

@@ -1,0 +1,15 @@
+appId: com.atatus.oc.courier
+---
+- launchApp:
+    arguments:
+      USER_SERVICE_URL: ${MAESTRO_USER_SERVICE_URL}
+      SHIPPING_SERVICE_URL: ${MAESTRO_SHIPPING_SERVICE_URL}
+      ORDER_SERVICE_URL: ${MAESTRO_ORDER_SERVICE_URL}
+      ATATUS_LICENSE_KEY: ${MAESTRO_ATATUS_LICENSE_KEY}
+      ATATUS_SITE: ${MAESTRO_ATATUS_SITE}
+      ATATUS_SERVER_URL: ${MAESTRO_ATATUS_SERVER_URL}
+      ATATUS_ENV: ${MAESTRO_ATATUS_ENV}
+- extendedWaitUntil:
+    visible:
+      id: "login.submit|tab.queue"
+    timeout: 30000

@@ -1,0 +1,14 @@
+appId: com.atatus.oc.manager
+---
+# Android receives these as intent extras, iOS as launch arguments (NSUserDefaults).
+- launchApp:
+    arguments:
+      USER_SERVICE_URL: ${MAESTRO_USER_SERVICE_URL}
+      ANALYTICS_SERVICE_URL: ${MAESTRO_ANALYTICS_SERVICE_URL}
+      INVENTORY_SERVICE_URL: ${MAESTRO_INVENTORY_SERVICE_URL}
+      REVIEW_SERVICE_URL: ${MAESTRO_REVIEW_SERVICE_URL}
+      PRODUCT_SERVICE_URL: ${MAESTRO_PRODUCT_SERVICE_URL}
+- extendedWaitUntil:
+    visible:
+      id: "login.submit|tab.dashboard"
+    timeout: 30000

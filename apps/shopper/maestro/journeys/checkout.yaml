@@ -1,0 +1,49 @@
+appId: com.atatus.oc.shopper
+name: Buy a product
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/login.yaml
+- tapOn:
+    id: "nav.shop"
+- extendedWaitUntil:
+    visible:
+      id: "product.card"
+    timeout: 15000
+- tapOn:
+    id: "product.card"
+    index: ${Math.floor(Math.random() * 4)}
+- extendedWaitUntil:
+    visible: "Add to Cart"
+    timeout: 15000
+- tapOn:
+    id: "product.add"
+- back
+- tapOn:
+    id: "nav.cart"
+- tapOn:
+    id: "cart.checkout"
+- extendedWaitUntil:
+    visible: "Contact"
+    timeout: 15000
+- tapOn: "Street address"
+- inputText: ${Math.floor(Math.random() * 900 + 100) + ' Market Street'}
+- tapOn: "City"
+- inputText: "San Francisco"
+- tapOn: "State"
+- inputText: "CA"
+- tapOn: "ZIP code"
+- inputText: ${['94105', '10001', '60601', '73301', '98101'][Math.floor(Math.random() * 5)]}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: "checkout.carrier"
+    direction: DOWN
+- tapOn:
+    id: "checkout.carrier"
+    index: 0
+- tapOn:
+    id: "checkout.place"
+- extendedWaitUntil:
+    visible: "Payment"
+    timeout: 30000
+- runFlow: ../common/flush.yaml

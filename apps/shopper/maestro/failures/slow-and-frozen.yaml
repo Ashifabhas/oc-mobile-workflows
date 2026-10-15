@@ -1,0 +1,21 @@
+appId: com.atatus.oc.shopper
+name: Slow screen and frozen UI
+---
+- runFlow: ../common/diagnostics.yaml
+- tapOn:
+    id: "diag.slow_screen"
+- extendedWaitUntil:
+    visible:
+      id: "slow.loaded"
+    timeout: 15000
+- back
+- scrollUntilVisible:
+    element:
+      id: "diag.freeze"
+    direction: DOWN
+- tapOn:
+    id: "diag.freeze"
+- extendedWaitUntil:
+    visible: "UI thread was blocked for 6s"
+    timeout: 30000
+- runFlow: ../common/flush.yaml

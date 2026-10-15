@@ -1,0 +1,22 @@
+appId: com.atatus.oc.shopper
+name: Handled and unhandled app errors, plus logs
+---
+- runFlow: ../common/diagnostics.yaml
+- tapOn:
+    id: "diag.handled_error"
+- extendedWaitUntil:
+    visible: "Handled error reported"
+    timeout: 10000
+- tapOn:
+    id: "diag.logs"
+- extendedWaitUntil:
+    visible: "Sent 3 logs"
+    timeout: 10000
+- scrollUntilVisible:
+    element:
+      id: "diag.dart_error"
+    direction: DOWN
+- tapOn:
+    id: "diag.dart_error"
+- assertVisible: "Diagnostics"
+- runFlow: ../common/flush.yaml

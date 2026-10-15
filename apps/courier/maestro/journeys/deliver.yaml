@@ -1,0 +1,53 @@
+appId: com.atatus.oc.courier
+name: Deliver a parcel that is on the route
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/login.yaml
+- tapOn:
+    id: "tab.queue"
+- tapOn:
+    id: "queue.filter.onroute"
+- extendedWaitUntil:
+    visible:
+      id: "queue.row|queue.empty"
+    timeout: 20000
+- runFlow:
+    when:
+      visible:
+        id: "queue.row"
+    commands:
+      - tapOn:
+          id: "queue.row"
+          index: 0
+      - extendedWaitUntil:
+          visible:
+            id: "shipment.status"
+          timeout: 15000
+      - runFlow:
+          when:
+            visible:
+              id: "shipment.action.out_for_delivery"
+          commands:
+            - tapOn:
+                id: "shipment.location"
+            - inputText: ${['Guindy hub', 'Koramangala depot', 'Andheri east', 'Hitec City gate'][Math.floor(Math.random() * 4)]}
+            - tapOn:
+                id: "shipment.status"
+            - tapOn:
+                id: "shipment.action.out_for_delivery"
+            - extendedWaitUntil:
+                visible: "Status set to out for delivery|Update failed.*"
+                timeout: 20000
+      - runFlow:
+          when:
+            visible:
+              id: "shipment.action.delivered"
+          commands:
+            - tapOn:
+                id: "shipment.action.delivered"
+            - extendedWaitUntil:
+                visible: "Status set to delivered|Update failed.*"
+                timeout: 20000
+      - tapOn:
+          id: "nav.back"
+- runFlow: ../common/flush.yaml

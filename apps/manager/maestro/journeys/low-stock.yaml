@@ -1,0 +1,24 @@
+appId: com.atatus.oc.manager
+name: Check the low-stock reorder queue
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/login.yaml
+- tapOn:
+    id: "tab.low-stock"
+- extendedWaitUntil:
+    visible:
+      id: "lowstock.row|lowstock.empty"
+    timeout: 20000
+- runFlow:
+    when:
+      visible:
+        id: "lowstock.row"
+    commands:
+      - scroll
+- tapOn:
+    id: "lowstock.refresh"
+- extendedWaitUntil:
+    visible:
+      id: "lowstock.count"
+    timeout: 20000
+- runFlow: ../common/flush.yaml

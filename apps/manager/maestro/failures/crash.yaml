@@ -1,0 +1,14 @@
+appId: com.atatus.oc.manager
+name: App crash
+---
+- runFlow: ../common/diagnostics.yaml
+- scrollUntilVisible:
+    element:
+      id: "diag.crash"
+    direction: DOWN
+- tapOn:
+    id: "diag.crash"
+- assertNotVisible:
+    id: "diag.result"
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/flush.yaml

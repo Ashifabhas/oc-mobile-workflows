@@ -1,0 +1,50 @@
+appId: com.atatus.oc.warehouse
+name: Look up a product, pick and release it, check movements
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/login.yaml
+- tapOn:
+    id: "tab.lookup"
+- tapOn:
+    id: "lookup.query"
+# Exact seeded names: every seeded product has an inventory record, simulator-created ones may not.
+- inputText: ${['Aurora Smartphone X1', 'Drift Wireless Mouse', 'Canvas Low-Top Sneakers', 'Four Season Tent 2P', 'Foam Massage Roller', 'Cable Management Kit', 'Onyx Power Bank 20000', 'Digital Kitchen Scale'][Math.floor(Math.random() * 8)]}
+- tapOn:
+    id: "lookup.search"
+- extendedWaitUntil:
+    visible:
+      id: "lookup.row"
+    timeout: 15000
+- tapOn:
+    id: "lookup.row"
+    index: 0
+- extendedWaitUntil:
+    visible:
+      id: "item.available"
+    timeout: 15000
+- tapOn:
+    id: "item.pick"
+- tapOn:
+    id: "qty.confirm"
+- extendedWaitUntil:
+    visible:
+      id: "item.result"
+    timeout: 15000
+- tapOn:
+    id: "item.release"
+- tapOn:
+    id: "qty.confirm"
+- extendedWaitUntil:
+    visible: "Released.*|Failed.*"
+    timeout: 15000
+- scrollUntilVisible:
+    element:
+      id: "item.movements"
+    direction: DOWN
+- tapOn:
+    id: "item.movements"
+- extendedWaitUntil:
+    visible:
+      id: "movement.row|movements.empty"
+    timeout: 15000
+- runFlow: ../common/flush.yaml

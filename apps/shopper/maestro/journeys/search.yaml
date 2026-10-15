@@ -1,0 +1,22 @@
+appId: com.atatus.oc.shopper
+name: Search for a product
+---
+- runFlow: ../common/launch.yaml
+- tapOn:
+    id: "nav.shop"
+- tapOn:
+    id: "shop.search"
+- inputText: ${['Smartphone', 'Wireless', 'Sneakers', 'Tent', 'Statistics', 'Roller', 'Pen'][Math.floor(Math.random() * 7)]}
+- pressKey: Enter
+- hideKeyboard
+- extendedWaitUntil:
+    visible:
+      id: "product.card"
+    timeout: 15000
+- tapOn:
+    id: "product.card"
+    index: 0
+- extendedWaitUntil:
+    visible: "Add to Cart"
+    timeout: 15000
+- runFlow: ../common/flush.yaml

@@ -1,0 +1,16 @@
+appId: com.atatus.oc.shopper
+name: Update the profile
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/login.yaml
+- tapOn:
+    id: "nav.account"
+- tapOn: "Phone"
+- eraseText: 20
+- inputText: ${'+1415' + Math.floor(Math.random() * 9000000 + 1000000)}
+- hideKeyboard
+- tapOn: "Save Changes"
+- extendedWaitUntil:
+    visible: "Profile updated."
+    timeout: 15000
+- runFlow: ../common/flush.yaml

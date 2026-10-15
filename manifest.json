@@ -1,0 +1,88 @@
+{
+  "apps": {
+    "courier": {
+      "app_id": "com.atatus.oc.courier",
+      "stack": "React Native",
+      "atatus_sdk": false,
+      "maestro": "apps/courier/maestro",
+      "platforms": {
+        "android": {
+          "artifact": "apps/courier/android/courier.apk",
+          "bytes": 21075378,
+          "sha256": "023f7a73c3bb419f4cb05ae44c750d14bc6c904ee7e867b32542ecaa3b0e9a95",
+          "built_at": "2026-10-15T01:29:18Z",
+          "source_commit": "c2405598e53b24dae5ffeff286d040374b9e73ee",
+          "source_dirty": false,
+          "abis": [
+            "x86_64"
+          ]
+        }
+      }
+    },
+    "manager": {
+      "app_id": "com.atatus.oc.manager",
+      "stack": "Compose Multiplatform",
+      "atatus_sdk": false,
+      "maestro": "apps/manager/maestro",
+      "platforms": {
+        "android": {
+          "artifact": "apps/manager/android/manager.apk",
+          "bytes": 9327926,
+          "sha256": "566dc5d84453244f817a636a25d11f7a3808d6b38e64c874532bcaca3895e862",
+          "built_at": "2026-10-14T16:40:48Z",
+          "source_commit": "c2405598e53b24dae5ffeff286d040374b9e73ee",
+          "source_dirty": false,
+          "abis": [
+            "arm64-v8a",
+            "armeabi-v7a",
+            "x86",
+            "x86_64"
+          ]
+        }
+      }
+    },
+    "shopper": {
+      "app_id": "com.atatus.oc.shopper",
+      "stack": "Flutter",
+      "atatus_sdk": true,
+      "maestro": "apps/shopper/maestro",
+      "platforms": {
+        "android": {
+          "artifact": "apps/shopper/android/shopper.apk",
+          "bytes": 22839842,
+          "sha256": "a95ef577fc8e080603f9fa527ef9146b5cf5f880f054ee6c5b63cd6ddfe68578",
+          "built_at": "2026-10-15T01:23:56Z",
+          "source_commit": "c2405598e53b24dae5ffeff286d040374b9e73ee",
+          "source_dirty": false,
+          "abis": [
+            "arm64-v8a",
+            "armeabi-v7a",
+            "x86_64"
+          ]
+        }
+      }
+    },
+    "warehouse": {
+      "app_id": "com.atatus.oc.warehouse",
+      "stack": "Kotlin + Jetpack Compose",
+      "atatus_sdk": true,
+      "maestro": "apps/warehouse/maestro",
+      "platforms": {
+        "android": {
+          "artifact": "apps/warehouse/android/warehouse.apk",
+          "bytes": 12520356,
+          "sha256": "64f506dbcf2f4d4b5fa9e75b7b62374f2ed8828d13b0eacd6899f373e8958c76",
+          "built_at": "2026-10-14T08:13:13Z",
+          "source_commit": "c2405598e53b24dae5ffeff286d040374b9e73ee",
+          "source_dirty": false,
+          "abis": [
+            "arm64-v8a",
+            "armeabi-v7a",
+            "x86",
+            "x86_64"
+          ]
+        }
+      }
+    }
+  }
+}
