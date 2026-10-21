@@ -26,6 +26,9 @@ export MAESTRO_CLI_NO_ANALYTICS=1 MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=tru
 
 adb install -r "$APK" > /dev/null
 echo "installed $APP.apk"
+# A slow CI emulator often ANRs the launcher; its system dialog covers the app and fails every flow after it.
+adb shell settings put global hide_error_dialogs 1
+adb shell settings put secure anr_show_background 0
 
 mapfile -t FLOWS < <(
   cd "$FLOWS_DIR"
@@ -49,6 +52,10 @@ recover_device() {
 }
 
 mkdir -p "$OUT"
+adb logcat -c
+adb logcat -v threadtime > "$OUT/logcat.txt" 2>&1 &
+LOGCAT_PID=$!
+trap 'kill "$LOGCAT_PID" 2>/dev/null || true' EXIT
 RESULTS="$OUT/results.tsv"
 : > "$RESULTS"
 deadline=$(( $(date +%s) + MINUTES * 60 ))

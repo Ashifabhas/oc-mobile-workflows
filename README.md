@@ -38,7 +38,8 @@ app's `ios/` folder appears once a build has been fetched.
 committed APK and loops that app's flows in random order for the given minutes against `OC_BASE_URL`
 (`https://<base>/<service>-service`). A flow that fails because the emulator dropped the device is retried once; any
 other failure is recorded as a result, since backend errors and chaos are part of the simulation. The job summary lists
-every flow run, and the Maestro output (with failure screenshots) is kept as the `maestro-<app>` artifact for 7 days.
+every flow run, and the Maestro output (with failure screenshots) and the emulator's full `logcat.txt` (where the
+Atatus SDK logs what it sends) are kept as the `maestro-<app>` artifact for 7 days.
 
 ```bash
 gh workflow run simulate.yml -f apps="shopper warehouse" -f duration=30            # manual
