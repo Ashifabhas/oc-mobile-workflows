@@ -60,13 +60,15 @@ Repository settings:
 | Name | Kind | Required | Value |
 |---|---|---|---|
 | `MAESTRO_SEED_PASSWORD` | secret | yes | password of the seeded users the flows sign in as |
-| `ATATUS_LICENSE_KEY` | secret | for RUM | turns Atatus mobile RUM on in shopper and warehouse; without it they still drive the backend |
+| `ATATUS_LICENSE_KEY` | secret | for RUM | the mobile ingest gate token of `OC_BASE_URL` (not a real Atatus key); without it shopper and warehouse still drive the backend |
 | `OC_BASE_URL` | variable | no | default `https://qa.atatus.com` |
-| `ATATUS_SITE` | variable | no | `us`, `in` (default) or `eu` |
-| `ATATUS_SERVER_URL` | variable | no | overrides the site's intake URL |
 | `ATATUS_ENV` | variable | no | environment tag, default `simulation` |
 
 Courier and manager have no Atatus SDK; they only generate backend traffic.
+
+Mobile RUM, logs and session replay go to `OC_BASE_URL` (`/v1/android/*`, `/v1/ios/*`), where the gateway admits only
+requests carrying the gate token and hands them to the platform's telemetry proxy, which sends them to every
+configured Atatus account with that account's real key.
 
 ## Updating
 

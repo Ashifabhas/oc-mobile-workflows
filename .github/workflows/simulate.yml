@@ -103,8 +103,6 @@ jobs:
           OC_BASE_URL: ${{ vars.OC_BASE_URL || 'https://qa.atatus.com' }}
           MAESTRO_SEED_PASSWORD: ${{ secrets.MAESTRO_SEED_PASSWORD }}
           ATATUS_LICENSE_KEY: ${{ secrets.ATATUS_LICENSE_KEY }}
-          ATATUS_SITE: ${{ vars.ATATUS_SITE || 'in' }}
-          ATATUS_SERVER_URL: ${{ vars.ATATUS_SERVER_URL }}
           ATATUS_ENV: ${{ vars.ATATUS_ENV || 'simulation' }}
           SIM_INCLUDE_FAILURES: ${{ needs.plan.outputs.include_failures }}
           SIM_FLOWS: ${{ needs.plan.outputs.flows }}
