@@ -18,10 +18,10 @@ BASE="${BASE%/}"
 for svc in user product order inventory payment analytics shipping review; do
   export "MAESTRO_${svc^^}_SERVICE_URL=$BASE/$svc-service"
 done
-# RUM goes through qa-nginx to flux, which fans it out to every Atatus Target; the key is qa-nginx's gate token, not a real license key.
+# RUM goes through the platform's /flux ingest to flux, which fans it out to every Atatus Target; the key is the oc_flux_ gate token, not a real license key.
 export MAESTRO_ATATUS_LICENSE_KEY="${ATATUS_LICENSE_KEY:-}"
 export MAESTRO_ATATUS_SITE=in
-export MAESTRO_ATATUS_SERVER_URL="$BASE"
+export MAESTRO_ATATUS_SERVER_URL="$BASE/flux"
 export MAESTRO_ATATUS_ENV="${ATATUS_ENV:-simulation}"
 export MAESTRO_CLI_NO_ANALYTICS=1 MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true
 
