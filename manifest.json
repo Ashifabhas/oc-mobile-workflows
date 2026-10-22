@@ -28,9 +28,9 @@
         "android": {
           "artifact": "apps/manager/android/manager.apk",
           "bytes": 9327926,
-          "sha256": "566dc5d84453244f817a636a25d11f7a3808d6b38e64c874532bcaca3895e862",
-          "built_at": "2026-10-14T16:40:48Z",
-          "source_commit": "c2405598e53b24dae5ffeff286d040374b9e73ee",
+          "sha256": "70a654fcd4d5b5aa3d9f0994479c50f7a8271290ebbd0096b48e21208b3aaa0d",
+          "built_at": "2026-10-22T05:58:55Z",
+          "source_commit": "47a12ead0cf9ce28147e1ada66f2f5fe1727d38b",
           "source_dirty": false,
           "abis": [
             "arm64-v8a",
