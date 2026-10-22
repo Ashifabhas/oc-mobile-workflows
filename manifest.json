@@ -71,10 +71,10 @@
         "android": {
           "artifact": "apps/warehouse/android/warehouse.apk",
           "bytes": 12520356,
-          "sha256": "64f506dbcf2f4d4b5fa9e75b7b62374f2ed8828d13b0eacd6899f373e8958c76",
-          "built_at": "2026-10-14T08:13:13Z",
-          "source_commit": "c2405598e53b24dae5ffeff286d040374b9e73ee",
-          "source_dirty": false,
+          "sha256": "3948b6a1988401039e18142a5083db58440a42736b5c9b5edd4f092f102758e5",
+          "built_at": "2026-10-22T01:52:48Z",
+          "source_commit": "4c4a80996e7f1a3e94671e2996e67fcb9fa9c8fd",
+          "source_dirty": true,
           "abis": [
             "arm64-v8a",
             "armeabi-v7a",

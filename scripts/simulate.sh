@@ -26,8 +26,8 @@ export MAESTRO_CLI_NO_ANALYTICS=1 MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=tru
 
 adb install -r "$APK" > /dev/null
 echo "installed $APP.apk"
-# A slow CI emulator often ANRs the launcher; its system dialog covers the app and fails every flow after it.
-adb shell settings put global hide_error_dialogs 1
+# The launcher ANRs on a freshly booted CI emulator and its dialog covers the app for the whole run; flows start apps directly.
+adb shell pm disable-user --user 0 com.google.android.apps.nexuslauncher > /dev/null
 adb shell settings put secure anr_show_background 0
 
 mapfile -t FLOWS < <(

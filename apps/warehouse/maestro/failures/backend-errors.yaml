@@ -1,5 +1,5 @@
 appId: com.atatus.oc.warehouse
-name: Backend errors (HTTP 500 and 404)
+name: Backend errors (HTTP 500 and 400)
 ---
 - runFlow: ../common/diagnostics.yaml
 - tapOn:
@@ -10,6 +10,6 @@ name: Backend errors (HTTP 500 and 404)
 - tapOn:
     id: "diag.http_404"
 - extendedWaitUntil:
-    visible: "Missing item: HTTP 404"
+    visible: "Missing item: HTTP 400"
     timeout: 15000
 - runFlow: ../common/flush.yaml

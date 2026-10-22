@@ -12,6 +12,6 @@ name: Slow screen and frozen UI
 - tapOn:
     id: "diag.freeze"
 - extendedWaitUntil:
-    visible: "UI thread was blocked for 6s"
+    visible: "UI thread was blocked for 4s"
     timeout: 30000
 - runFlow: ../common/flush.yaml
