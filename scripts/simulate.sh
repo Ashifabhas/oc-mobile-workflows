@@ -43,9 +43,11 @@ fi
 echo "flows: ${FLOWS[*]}"
 
 device_ok() { [[ "$(adb get-state 2>/dev/null)" == "device" ]]; }
+# adb often drops for a moment and is back before we look, so Maestro's own log is the better witness.
+device_dropped() { ! device_ok || grep -rqsE 'device offline|DeviceServerDiedException' "$1"; }
 
 recover_device() {
-  echo "device lost, reconnecting" >&2
+  echo "device dropped, reconnecting" >&2
   adb reconnect > /dev/null 2>&1 || true
   timeout 120 adb wait-for-device || return 1
   until [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" ]]; do sleep 2; done
@@ -72,7 +74,7 @@ while (( $(date +%s) < deadline )); do
     if ! maestro test --no-ansi --test-output-dir "$dir" "$FLOWS_DIR/$flow" > "$dir.log" 2>&1; then
       status=fail
       # Retry once only when the emulator dropped the device; an app or backend failure is a valid simulation outcome.
-      if ! device_ok && recover_device; then
+      if device_dropped "$dir" && recover_device; then
         status=retried-fail
         maestro test --no-ansi --test-output-dir "$dir-retry" "$FLOWS_DIR/$flow" > "$dir-retry.log" 2>&1 && status=retried-pass
       fi
