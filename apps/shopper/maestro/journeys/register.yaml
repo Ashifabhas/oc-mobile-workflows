@@ -28,6 +28,9 @@ name: Create an account
 - inputText: ${'shopper.' + Date.now() + '@example.test'}
 - tapOn: "Password"
 - inputText: ${MAESTRO_SEED_PASSWORD}
+- scrollUntilVisible:
+    element: "Confirm password"
+    direction: DOWN
 - tapOn: "Confirm password"
 - inputText: ${MAESTRO_SEED_PASSWORD}
 - hideKeyboard

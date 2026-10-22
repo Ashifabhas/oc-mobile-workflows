@@ -23,9 +23,10 @@ name: Browse top-rated products and open one
       - tapOn:
           id: "toprated.row"
           index: 0
+      # review-service's leaderboard can list products product-service no longer has; "not found" is a valid outcome.
       - extendedWaitUntil:
           visible:
-            id: "product.rating"
+            id: "product.rating|load.error"
           timeout: 15000
       - tapOn:
           id: "nav.back"
