@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       apps:
-        description: Android apps to simulate, space-separated (may be empty)
+        description: Android apps to simulate, space-separated, or none
         default: shopper warehouse courier manager
       ios_apps:
         description: iOS apps to simulate on a macOS runner, space-separated (merchant, shopper)
@@ -45,7 +45,7 @@ jobs:
       - id: plan
         env:
           EVENT: ${{ github.event_name }}
-          # An empty apps input means "no Android apps", so it must not fall back to the default the way || would.
+          # GitHub fills a blank workflow_dispatch input with its default, so "none" is how to run no Android apps.
           INPUT_APPS: ${{ inputs.apps }}
           PAYLOAD_APPS: ${{ toJSON(github.event.client_payload.apps) }}
           IOS_APPS: ${{ inputs.ios_apps || github.event.client_payload.ios_apps || '' }}
@@ -71,6 +71,7 @@ jobs:
             done
             (( ${#out[@]} )) && printf '%s\n' "${out[@]}" | jq -R . | jq -sc . || echo '[]'
           }
+          [[ "$APPS" == "none" ]] && APPS=""
           apps="$(pick "shopper warehouse courier manager" "$APPS")"
           ios_apps="$(pick "merchant shopper" "$IOS_APPS")"
           if [[ "$apps" == "[]" && "$ios_apps" == "[]" ]]; then
@@ -142,6 +143,14 @@ jobs:
           disable-animations: true
           script: ./scripts/simulate.sh ${{ matrix.app }} ${{ needs.plan.outputs.duration }}
 
+      # The artifact is public; Maestro output and device logs carry the launch arguments and the SDK's request URLs.
+      - name: Mask secrets in the output
+        if: always()
+        env:
+          ATATUS_LICENSE_KEY: ${{ secrets.ATATUS_LICENSE_KEY }}
+          MAESTRO_SEED_PASSWORD: ${{ secrets.MAESTRO_SEED_PASSWORD }}
+        run: ./scripts/mask-secrets.sh out
+
       - name: Upload Maestro output
         if: always()
         uses: actions/upload-artifact@v4
@@ -200,7 +209,16 @@ jobs:
           SIM_INCLUDE_FAILURES: ${{ needs.plan.outputs.include_failures }}
           SIM_FLOWS: ${{ needs.plan.outputs.flows }}
           SIM_OUT: ${{ github.workspace }}/out
+          MAESTRO_DRIVER_STARTUP_TIMEOUT: "180000"
         run: ./scripts/simulate.sh ${{ matrix.app }} ${{ needs.plan.outputs.duration }} ios
+
+      # The artifact is public; Maestro output and device logs carry the launch arguments and the SDK's request URLs.
+      - name: Mask secrets in the output
+        if: always()
+        env:
+          ATATUS_LICENSE_KEY: ${{ secrets.ATATUS_LICENSE_KEY }}
+          MAESTRO_SEED_PASSWORD: ${{ secrets.MAESTRO_SEED_PASSWORD }}
+        run: ./scripts/mask-secrets.sh out
 
       - name: Upload Maestro output
         if: always()

@@ -12,7 +12,8 @@ holds only build output and flows. No build carries a service URL or a key: both
 ├── .github/workflows/
 │   └── simulate.yml         # run the flows on emulators against the live services
 ├── scripts/
-│   └── simulate.sh          # install one app, loop its flows in random order for N minutes
+│   ├── simulate.sh          # install one app, loop its flows in random order for N minutes
+│   └── mask-secrets.sh      # mask the flux token and seed password in the output before it is uploaded
 └── apps/
     └── <app>/
         ├── android/<app>.apk  # x86_64 release build, debug-signed, for emulators only
@@ -42,18 +43,20 @@ every flow run, and the Maestro output (with failure screenshots) and the emulat
 Atatus SDK logs what it sends) are kept as the `maestro-<app>` artifact for 7 days.
 
 `ios_apps` adds one job per iOS app on `macos-26`: it boots an iPhone simulator, installs `apps/<app>/ios/<app>.app.zip`
-and loops the same flows, keeping the app's simulator log as `device.log` in the `maestro-ios-<app>` artifact.
+and loops the same flows, keeping the app's simulator log as `device.log` in the `maestro-ios-<app>` artifact. A flow whose Maestro iOS driver
+fails to start or dies mid-run (no failed step) is retried once. The flux token and the seed password are masked as
+`***` in every artifact before upload.
 
 ```bash
 gh workflow run simulate.yml -f apps="shopper warehouse" -f duration=30            # manual; the control panel uses the same workflow_dispatch
-gh workflow run simulate.yml -f apps= -f ios_apps=merchant -f duration=5           # iOS only
+gh workflow run simulate.yml -f apps=none -f ios_apps=merchant -f duration=5       # iOS only
 gh api repos/<owner>/oc-mobile-workflows/dispatches \
   -f event_type=simulate -F client_payload[apps]="courier" -F client_payload[duration]=15   # repository_dispatch alternative
 ```
 
 | Input / payload key | Default | Meaning |
 |---|---|---|
-| `apps` | `shopper warehouse courier manager` | Android apps to run, one emulator each, in parallel; empty runs none |
+| `apps` | `shopper warehouse courier manager` | Android apps to run, one emulator each, in parallel; `none` runs none |
 | `ios_apps` | empty | iOS apps to run (`merchant`, `shopper`), one simulator each on a macOS runner |
 | `duration` | `30` | minutes of flows per app (1–300) |
 | `include_failures` | `true` | also run the deliberate-failure flows (backend errors, slow screens, crashes) |

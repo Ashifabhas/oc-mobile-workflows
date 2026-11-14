@@ -59,12 +59,18 @@ echo "flows: ${FLOWS[*]}"
 
 device_ok() { [[ "$(adb get-state 2>/dev/null)" == "device" ]]; }
 # adb often drops for a moment and is back before we look, so Maestro's own log is the better witness.
+# On iOS the device stays up but Maestro's XCTest driver can fail to start or die mid-flow; that run then ends
+# without any failed step.
 device_dropped() {
-  [[ "$PLATFORM" == "android" ]] || return 1
+  if [[ "$PLATFORM" == "ios" ]]; then
+    grep -qE 'iOS driver not ready' "$1.log" || ! grep -qE '\.\.\. FAILED' "$1.log"
+    return
+  fi
   ! device_ok || grep -rqsE 'device offline|DeviceServerDiedException' "$1"
 }
 
 recover_device() {
+  [[ "$PLATFORM" == "ios" ]] && { echo "iOS driver failed, retrying" >&2; return 0; }
   echo "device dropped, reconnecting" >&2
   adb reconnect > /dev/null 2>&1 || true
   timeout 120 adb wait-for-device || return 1
