@@ -8,7 +8,16 @@ name: Slow screen and frozen UI
     visible:
       id: "slow.loaded"
     timeout: 15000
-- back
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - back
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn: "Back"
 - scrollUntilVisible:
     element:
       id: "diag.freeze"

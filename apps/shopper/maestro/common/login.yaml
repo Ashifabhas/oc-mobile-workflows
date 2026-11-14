@@ -26,9 +26,8 @@ appId: com.atatus.oc.shopper
 - inputText: ${output.shopper}
 - tapOn: "Password"
 - inputText: ${MAESTRO_SEED_PASSWORD}
-- hideKeyboard
-- tapOn:
-    id: "login.submit"
+# Enter submits through onFieldSubmitted on both platforms; iOS hideKeyboard presses Return and submits too early.
+- pressKey: Enter
 - extendedWaitUntil:
     visible:
       id: "account.signout"

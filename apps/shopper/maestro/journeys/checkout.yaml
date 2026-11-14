@@ -17,7 +17,16 @@ name: Buy a product
     timeout: 15000
 - tapOn:
     id: "product.add"
-- back
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - back
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn: "Back"
 - tapOn:
     id: "nav.cart"
 - tapOn:

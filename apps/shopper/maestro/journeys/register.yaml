@@ -33,9 +33,7 @@ name: Create an account
     direction: DOWN
 - tapOn: "Confirm password"
 - inputText: ${MAESTRO_SEED_PASSWORD}
-- hideKeyboard
-- tapOn:
-    id: "register.submit"
+- pressKey: Enter
 - extendedWaitUntil:
     visible:
       id: "account.signout"

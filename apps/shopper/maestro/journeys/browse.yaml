@@ -20,7 +20,16 @@ name: Browse the catalogue
     element: "Customer reviews[\\s\\S]*"
     direction: DOWN
     visibilityPercentage: 50
-- back
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - back
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - tapOn: "Back"
 - tapOn:
     id: "nav.home"
 - runFlow: ../common/flush.yaml
