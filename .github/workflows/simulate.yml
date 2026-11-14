@@ -4,8 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       apps:
-        description: Apps to simulate, space-separated
+        description: Android apps to simulate, space-separated (may be empty)
         default: shopper warehouse courier manager
+      ios_apps:
+        description: iOS apps to simulate on a macOS runner, space-separated (merchant, shopper)
+        default: ""
       duration:
         description: Minutes of flows per app
         default: "30"
@@ -33,6 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       apps: ${{ steps.plan.outputs.apps }}
+      ios_apps: ${{ steps.plan.outputs.ios_apps }}
       duration: ${{ steps.plan.outputs.duration }}
       include_failures: ${{ steps.plan.outputs.include_failures }}
       flows: ${{ steps.plan.outputs.flows }}
@@ -40,7 +44,11 @@ jobs:
     steps:
       - id: plan
         env:
-          APPS: ${{ inputs.apps || github.event.client_payload.apps || 'shopper warehouse courier manager' }}
+          EVENT: ${{ github.event_name }}
+          # An empty apps input means "no Android apps", so it must not fall back to the default the way || would.
+          INPUT_APPS: ${{ inputs.apps }}
+          PAYLOAD_APPS: ${{ toJSON(github.event.client_payload.apps) }}
+          IOS_APPS: ${{ inputs.ios_apps || github.event.client_payload.ios_apps || '' }}
           DURATION: ${{ inputs.duration || github.event.client_payload.duration || '30' }}
           # format() keeps an explicit false, which || would discard.
           INCLUDE_FAILURES_INPUT: ${{ format('{0}', inputs.include_failures) }}
@@ -48,19 +56,34 @@ jobs:
           FLOWS: ${{ inputs.flows || github.event.client_payload.flows || '' }}
           API_LEVEL: ${{ inputs.api_level || github.event.client_payload.api_level || '35' }}
         run: |
-          valid="shopper warehouse courier manager"
-          apps=()
-          for a in $APPS; do
-            [[ " $valid " == *" $a "* ]] || { echo "::error::unknown app '$a' (valid: $valid)"; exit 1; }
-            apps+=("$a")
-          done
+          if [[ "$EVENT" == "workflow_dispatch" ]]; then
+            APPS="$INPUT_APPS"
+          elif [[ "$PAYLOAD_APPS" == "null" ]]; then
+            APPS="shopper warehouse courier manager"
+          else
+            APPS="$(jq -r . <<< "$PAYLOAD_APPS")"
+          fi
+          pick() {
+            local valid="$1" list="$2" out=() a
+            for a in $list; do
+              [[ " $valid " == *" $a "* ]] || { echo "unknown app '$a' (valid: $valid)" >&2; return 1; }
+              out+=("$a")
+            done
+            (( ${#out[@]} )) && printf '%s\n' "${out[@]}" | jq -R . | jq -sc . || echo '[]'
+          }
+          apps="$(pick "shopper warehouse courier manager" "$APPS")"
+          ios_apps="$(pick "merchant shopper" "$IOS_APPS")"
+          if [[ "$apps" == "[]" && "$ios_apps" == "[]" ]]; then
+            echo "::error::select at least one Android or iOS app"; exit 1
+          fi
           if ! [[ "$DURATION" =~ ^[0-9]+$ ]] || (( DURATION < 1 || DURATION > 300 )); then
             echo "::error::duration must be 1-300 minutes"; exit 1
           fi
           include="${INCLUDE_FAILURES_INPUT:-${INCLUDE_FAILURES_PAYLOAD:-true}}"
           [[ "$include" == "false" ]] || include=true
           {
-            echo "apps=$(printf '%s\n' "${apps[@]}" | jq -R . | jq -sc .)"
+            echo "apps=$apps"
+            echo "ios_apps=$ios_apps"
             echo "duration=$DURATION"
             echo "include_failures=$include"
             echo "flows=$FLOWS"
@@ -69,6 +92,7 @@ jobs:
 
   android:
     needs: plan
+    if: needs.plan.outputs.apps != '[]'
     runs-on: ubuntu-latest
     timeout-minutes: 330
     strategy:
@@ -123,6 +147,66 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: maestro-${{ matrix.app }}
+          path: out/${{ matrix.app }}
+          if-no-files-found: ignore
+          retention-days: 7
+
+  ios:
+    needs: plan
+    if: needs.plan.outputs.ios_apps != '[]'
+    runs-on: macos-26
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJSON(needs.plan.outputs.ios_apps) }}
+    name: ios / ${{ matrix.app }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # simulate.sh needs bash 4+ and GNU shuf/timeout; macOS ships bash 3.2 and BSD tools.
+      - name: Install bash and coreutils
+        run: |
+          brew install bash coreutils
+          echo "$(brew --prefix coreutils)/libexec/gnubin" >> "$GITHUB_PATH"
+
+      - name: Install Maestro
+        env:
+          MAESTRO_VERSION: 2.11.0
+        run: |
+          curl -fsSL https://get.maestro.mobile.dev | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Boot simulator
+        run: |
+          sudo xcode-select -s "$(ls -d /Applications/Xcode_26*.app | grep -iv beta | sort -V | tail -1)"
+          udid="$(xcrun simctl list devices available -j | jq -r '[.devices | to_entries[] | select(.key | test("iOS-26")) | .value[] | select(.name | test("^iPhone"))][0].udid')"
+          [[ -n "$udid" && "$udid" != "null" ]] || { xcrun simctl list devices available; echo "::error::no iOS 26 iPhone simulator"; exit 1; }
+          xcrun simctl boot "$udid"
+          xcrun simctl bootstatus "$udid" -b
+          xcrun simctl list devices booted
+
+      - name: Run flows
+        env:
+          OC_BASE_URL: ${{ vars.OC_BASE_URL || 'https://qa.atatus.com' }}
+          MAESTRO_SEED_PASSWORD: ${{ secrets.MAESTRO_SEED_PASSWORD }}
+          ATATUS_LICENSE_KEY: ${{ secrets.ATATUS_LICENSE_KEY }}
+          ATATUS_ENV: ${{ vars.ATATUS_ENV || 'simulation' }}
+          SIM_INCLUDE_FAILURES: ${{ needs.plan.outputs.include_failures }}
+          SIM_FLOWS: ${{ needs.plan.outputs.flows }}
+          SIM_OUT: ${{ github.workspace }}/out
+        run: ./scripts/simulate.sh ${{ matrix.app }} ${{ needs.plan.outputs.duration }} ios
+
+      - name: Upload Maestro output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-ios-${{ matrix.app }}
           path: out/${{ matrix.app }}
           if-no-files-found: ignore
           retention-days: 7

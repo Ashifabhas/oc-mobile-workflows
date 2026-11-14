@@ -1,18 +1,24 @@
 #!/usr/bin/env bash
-# simulate.sh <app> <minutes> — install the app on the running emulator and loop its Maestro flows in random order.
+# simulate.sh <app> <minutes> [android|ios] — install the app on the running emulator or booted simulator and loop its
+# Maestro flows in random order.
 # Env: OC_BASE_URL, MAESTRO_SEED_PASSWORD, ATATUS_* (optional), SIM_INCLUDE_FAILURES=true|false, SIM_FLOWS (regex), SIM_OUT.
 set -euo pipefail
 
 APP="${1:?app}"
 MINUTES="${2:?minutes}"
+PLATFORM="${3:-android}"
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
-APK="$REPO/apps/$APP/android/$APP.apk"
+case "$PLATFORM" in
+  android) BUILD="apps/$APP/android/$APP.apk" ;;
+  ios) BUILD="apps/$APP/ios/$APP.app.zip" ;;
+  *) echo "platform must be android or ios" >&2; exit 1 ;;
+esac
 FLOWS_DIR="$REPO/apps/$APP/maestro"
 OUT="${SIM_OUT:-$REPO/out}/$APP"
 BASE="${OC_BASE_URL:?OC_BASE_URL}"
 BASE="${BASE%/}"
 
-[[ -f "$APK" ]] || { echo "no APK at apps/$APP/android/$APP.apk" >&2; exit 1; }
+[[ -f "$REPO/$BUILD" ]] || { echo "no $PLATFORM build at $BUILD" >&2; exit 1; }
 : "${MAESTRO_SEED_PASSWORD:?MAESTRO_SEED_PASSWORD}"
 
 for svc in user product order inventory payment analytics shipping review; do
@@ -25,11 +31,19 @@ export MAESTRO_ATATUS_SERVER_URL="$BASE/flux"
 export MAESTRO_ATATUS_ENV="${ATATUS_ENV:-simulation}"
 export MAESTRO_CLI_NO_ANALYTICS=1 MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true
 
-adb install -r "$APK" > /dev/null
-echo "installed $APP.apk"
-# The launcher ANRs on a freshly booted CI emulator and its dialog covers the app for the whole run; flows start apps directly.
-adb shell pm disable-user --user 0 com.google.android.apps.nexuslauncher > /dev/null
-adb shell settings put secure anr_show_background 0
+if [[ "$PLATFORM" == "android" ]]; then
+  adb install -r "$REPO/$BUILD" > /dev/null
+  # The launcher ANRs on a freshly booted CI emulator and its dialog covers the app for the whole run; flows start apps directly.
+  adb shell pm disable-user --user 0 com.google.android.apps.nexuslauncher > /dev/null
+  adb shell settings put secure anr_show_background 0
+else
+  unpacked="$(mktemp -d)"
+  ditto -x -k "$REPO/$BUILD" "$unpacked"
+  bundle="$(find "$unpacked" -maxdepth 1 -name '*.app' | head -1)"
+  xcrun simctl install booted "$bundle"
+  IOS_PROCESS="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "$bundle/Info.plist")"
+fi
+echo "installed $BUILD"
 
 mapfile -t FLOWS < <(
   cd "$FLOWS_DIR"
@@ -45,7 +59,10 @@ echo "flows: ${FLOWS[*]}"
 
 device_ok() { [[ "$(adb get-state 2>/dev/null)" == "device" ]]; }
 # adb often drops for a moment and is back before we look, so Maestro's own log is the better witness.
-device_dropped() { ! device_ok || grep -rqsE 'device offline|DeviceServerDiedException' "$1"; }
+device_dropped() {
+  [[ "$PLATFORM" == "android" ]] || return 1
+  ! device_ok || grep -rqsE 'device offline|DeviceServerDiedException' "$1"
+}
 
 recover_device() {
   echo "device dropped, reconnecting" >&2
@@ -55,10 +72,14 @@ recover_device() {
 }
 
 mkdir -p "$OUT"
-adb logcat -c
-adb logcat -v threadtime > "$OUT/logcat.txt" 2>&1 &
-LOGCAT_PID=$!
-trap 'kill "$LOGCAT_PID" 2>/dev/null || true' EXIT
+if [[ "$PLATFORM" == "android" ]]; then
+  adb logcat -c
+  adb logcat -v threadtime > "$OUT/logcat.txt" 2>&1 &
+else
+  xcrun simctl spawn booted log stream --style compact --level debug --predicate "process == \"$IOS_PROCESS\"" > "$OUT/device.log" 2>&1 &
+fi
+LOG_PID=$!
+trap 'kill "$LOG_PID" 2>/dev/null || true' EXIT
 RESULTS="$OUT/results.tsv"
 : > "$RESULTS"
 deadline=$(( $(date +%s) + MINUTES * 60 ))
@@ -87,11 +108,11 @@ done
 
 passed=$(grep -cE $'\t(pass|retried-pass)\t' "$RESULTS" || true)
 total=$(wc -l < "$RESULTS")
-echo "$APP: $passed/$total flows passed"
+echo "$APP ($PLATFORM): $passed/$total flows passed"
 
 if [[ -n "${GITHUB_STEP_SUMMARY:-}" ]]; then
   {
-    echo "### $APP: $passed/$total flows passed"
+    echo "### $APP ($PLATFORM): $passed/$total flows passed"
     echo
     echo "| # | Flow | Result | Seconds |"
     echo "|---|---|---|---|"

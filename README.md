@@ -41,15 +41,20 @@ other failure is recorded as a result, since backend errors and chaos are part o
 every flow run, and the Maestro output (with failure screenshots) and the emulator's full `logcat.txt` (where the
 Atatus SDK logs what it sends) are kept as the `maestro-<app>` artifact for 7 days.
 
+`ios_apps` adds one job per iOS app on `macos-26`: it boots an iPhone simulator, installs `apps/<app>/ios/<app>.app.zip`
+and loops the same flows, keeping the app's simulator log as `device.log` in the `maestro-ios-<app>` artifact.
+
 ```bash
 gh workflow run simulate.yml -f apps="shopper warehouse" -f duration=30            # manual; the control panel uses the same workflow_dispatch
+gh workflow run simulate.yml -f apps= -f ios_apps=merchant -f duration=5           # iOS only
 gh api repos/<owner>/oc-mobile-workflows/dispatches \
   -f event_type=simulate -F client_payload[apps]="courier" -F client_payload[duration]=15   # repository_dispatch alternative
 ```
 
 | Input / payload key | Default | Meaning |
 |---|---|---|
-| `apps` | `shopper warehouse courier manager` | apps to run, one emulator each, in parallel |
+| `apps` | `shopper warehouse courier manager` | Android apps to run, one emulator each, in parallel; empty runs none |
+| `ios_apps` | empty | iOS apps to run (`merchant`, `shopper`), one simulator each on a macOS runner |
 | `duration` | `30` | minutes of flows per app (1–300) |
 | `include_failures` | `true` | also run the deliberate-failure flows (backend errors, slow screens, crashes) |
 | `flows` | all | regex on the flow path, e.g. `journeys/` or `checkout|browse` |
