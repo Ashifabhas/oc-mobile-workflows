@@ -1,0 +1,43 @@
+appId: com.atatus.oc.merchant
+name: Search the catalogue and reprice a product
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/login.yaml
+- tapOn:
+    id: "tab.catalogue"
+- tapOn:
+    id: "catalogue.search"
+- inputText: ${['Laptop', 'Jacket', 'Skillet', 'Tent', 'Lamp', 'Watch', 'Bottle', 'Mat'][Math.floor(Math.random() * 8)]}
+- tapOn:
+    id: "catalogue.search_button"
+- extendedWaitUntil:
+    visible:
+      id: "product.row|catalogue.empty"
+    timeout: 15000
+- runFlow:
+    when:
+      visible:
+        id: "product.row"
+    commands:
+      - tapOn:
+          id: "product.row"
+          index: 0
+      - extendedWaitUntil:
+          visible:
+            id: "product.price"
+          timeout: 15000
+      - tapOn:
+          id: "product.edit"
+      - extendedWaitUntil:
+          visible:
+            id: "edit.price"
+          timeout: 10000
+      - tapOn:
+          id: ${['edit.adjust.down5', 'edit.adjust.up5', 'edit.adjust.up10'][Math.floor(Math.random() * 3)]}
+      - tapOn:
+          id: "edit.save"
+      - extendedWaitUntil:
+          visible:
+            id: "product.result|edit.error"
+          timeout: 15000
+- runFlow: ../common/flush.yaml

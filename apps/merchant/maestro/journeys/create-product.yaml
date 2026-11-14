@@ -1,0 +1,31 @@
+appId: com.atatus.oc.merchant
+name: List a new product
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/login.yaml
+- tapOn:
+    id: "tab.catalogue"
+- tapOn:
+    id: "catalogue.new"
+- extendedWaitUntil:
+    visible:
+      id: "new.category.*"
+    timeout: 15000
+- tapOn:
+    id: ${'new.category.' + ['electronics', 'books', 'toys-games', 'office-supplies', 'sports-outdoors'][Math.floor(Math.random() * 5)]}
+- tapOn:
+    id: "new.name"
+- inputText: ${['Trail Pack', 'Desk Lamp', 'Field Notebook', 'Travel Mug', 'Puzzle Box'][Math.floor(Math.random() * 5)] + ' ' + Math.floor(Math.random() * 9000 + 1000)}
+- tapOn:
+    id: "new.description"
+- inputText: "Listed from the merchant app. Ships within two business days."
+- tapOn:
+    id: "new.price"
+- inputText: ${(Math.random() * 90 + 10).toFixed(2)}
+- tapOn:
+    id: "new.save"
+- extendedWaitUntil:
+    visible:
+      id: "product.name|new.error"
+    timeout: 30000
+- runFlow: ../common/flush.yaml

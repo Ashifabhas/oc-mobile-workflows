@@ -1,0 +1,24 @@
+appId: com.atatus.oc.merchant
+---
+- evalScript: ${output.merchant = ['aarav.mehta', 'sana.qureshi', 'vikram.nair'][Math.floor(Math.random() * 3)] + '@observablecommerce.local'}
+- runFlow:
+    when:
+      visible:
+        id: "tab.account"
+    commands:
+      - tapOn:
+          id: "tab.account"
+      - tapOn:
+          id: "account.signout"
+- tapOn:
+    id: "login.email"
+- inputText: ${output.merchant}
+- tapOn:
+    id: "login.password"
+- inputText: ${MAESTRO_SEED_PASSWORD}
+- tapOn:
+    id: "login.submit"
+- extendedWaitUntil:
+    visible:
+      id: "tab.catalogue"
+    timeout: 20000

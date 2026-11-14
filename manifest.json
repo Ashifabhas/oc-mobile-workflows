@@ -41,6 +41,25 @@
         }
       }
     },
+    "merchant": {
+      "app_id": "com.atatus.oc.merchant",
+      "stack": "SwiftUI",
+      "atatus_sdk": true,
+      "maestro": "apps/merchant/maestro",
+      "platforms": {
+        "ios": {
+          "artifact": "apps/merchant/ios/merchant.app.zip",
+          "bytes": 8062658,
+          "sha256": "d8ed5d852ee249b116004bc336399fcb0791388a260916e653f903296fd7aab4",
+          "built_at": "2026-11-14T04:45:20Z",
+          "source_commit": "a983c8fa2e13e490aa745c630e674ce59609e834",
+          "source_dirty": false,
+          "sdk": "iphonesimulator",
+          "arch": "arm64",
+          "build_run": "https://github.com/atatus/ObservableCommerce/actions/runs/43557964245"
+        }
+      }
+    },
     "shopper": {
       "app_id": "com.atatus.oc.shopper",
       "stack": "Flutter",
@@ -59,6 +78,17 @@
             "armeabi-v7a",
             "x86_64"
           ]
+        },
+        "ios": {
+          "artifact": "apps/shopper/ios/shopper.app.zip",
+          "bytes": 56638499,
+          "sha256": "7d01c27bfa00265ce4b4b6194636b83dd209e165ac105db94adb80c0de583c45",
+          "built_at": "2026-11-14T04:45:20Z",
+          "source_commit": "a983c8fa2e13e490aa745c630e674ce59609e834",
+          "source_dirty": false,
+          "sdk": "iphonesimulator",
+          "arch": "arm64",
+          "build_run": "https://github.com/atatus/ObservableCommerce/actions/runs/43557964245"
         }
       }
     },

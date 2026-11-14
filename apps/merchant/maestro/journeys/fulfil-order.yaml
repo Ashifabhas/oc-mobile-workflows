@@ -1,0 +1,58 @@
+appId: com.atatus.oc.merchant
+name: Move an order through fulfilment
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/login.yaml
+- tapOn:
+    id: "tab.orders"
+- extendedWaitUntil:
+    visible:
+      id: "order.row|orders.empty"
+    timeout: 30000
+- tapOn:
+    id: "orders.filter.processing"
+- runFlow:
+    when:
+      visible:
+        id: "order.row"
+    commands:
+      - tapOn:
+          id: "order.row"
+          index: 0
+      - extendedWaitUntil:
+          visible:
+            id: "order.action.shipped"
+          timeout: 20000
+      - tapOn:
+          id: "order.action.shipped"
+      - extendedWaitUntil:
+          visible:
+            id: "order.result"
+          timeout: 15000
+# Nothing is being packed: start packing a paid order instead.
+- runFlow:
+    when:
+      visible:
+        id: "orders.empty"
+    commands:
+      - tapOn:
+          id: "orders.filter.confirmed"
+      - runFlow:
+          when:
+            visible:
+              id: "order.row"
+          commands:
+            - tapOn:
+                id: "order.row"
+                index: 0
+            - extendedWaitUntil:
+                visible:
+                  id: "order.action.processing"
+                timeout: 20000
+            - tapOn:
+                id: "order.action.processing"
+            - extendedWaitUntil:
+                visible:
+                  id: "order.result"
+                timeout: 15000
+- runFlow: ../common/flush.yaml

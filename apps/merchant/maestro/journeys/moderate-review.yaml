@@ -1,0 +1,50 @@
+appId: com.atatus.oc.merchant
+name: Hold a review for moderation, then approve it
+---
+- runFlow: ../common/launch.yaml
+- runFlow: ../common/login.yaml
+- tapOn:
+    id: "tab.reviews"
+- tapOn:
+    id: "reviews.filter.published"
+- extendedWaitUntil:
+    visible:
+      id: "review.row|reviews.empty|reviews.error"
+    timeout: 30000
+- runFlow:
+    when:
+      visible:
+        id: "review.row"
+    commands:
+      - tapOn:
+          id: "review.row"
+          index: 0
+      - tapOn:
+          id: "review.action.pending"
+      - extendedWaitUntil:
+          visible:
+            id: "review.result"
+          timeout: 20000
+      - tapOn:
+          id: "nav.back"
+- tapOn:
+    id: "reviews.filter.pending"
+- extendedWaitUntil:
+    visible:
+      id: "review.row|reviews.empty|reviews.error"
+    timeout: 30000
+- runFlow:
+    when:
+      visible:
+        id: "review.row"
+    commands:
+      - tapOn:
+          id: "review.row"
+          index: 0
+      - tapOn:
+          id: "review.action.published"
+      - extendedWaitUntil:
+          visible:
+            id: "review.result"
+          timeout: 20000
+- runFlow: ../common/flush.yaml
