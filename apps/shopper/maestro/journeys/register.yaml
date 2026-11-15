@@ -28,6 +28,8 @@ name: Create an account
 - inputText: ${'shopper.' + Date.now() + '@example.test'}
 - tapOn: "Password"
 - inputText: ${MAESTRO_SEED_PASSWORD}
+# Closes the keyboard (Password has no submit action), which on iOS can hide Confirm password from the scroll.
+- pressKey: Enter
 - scrollUntilVisible:
     element: "Confirm password"
     direction: DOWN
