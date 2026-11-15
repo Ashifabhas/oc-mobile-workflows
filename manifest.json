@@ -69,9 +69,9 @@
         "android": {
           "artifact": "apps/shopper/android/shopper.apk",
           "bytes": 22839842,
-          "sha256": "a95ef577fc8e080603f9fa527ef9146b5cf5f880f054ee6c5b63cd6ddfe68578",
-          "built_at": "2026-10-15T01:23:56Z",
-          "source_commit": "c2405598e53b24dae5ffeff286d040374b9e73ee",
+          "sha256": "3edfaea6d04b17b5dc1f1b7011084c2fda7c53fe124a49a8e86b1f5591bc0235",
+          "built_at": "2026-11-15T10:07:25Z",
+          "source_commit": "0efecd246a1eb225edf01613aaabd42646aa8518",
           "source_dirty": false,
           "abis": [
             "arm64-v8a",
@@ -81,14 +81,14 @@
         },
         "ios": {
           "artifact": "apps/shopper/ios/shopper.app.zip",
-          "bytes": 56638499,
-          "sha256": "7d01c27bfa00265ce4b4b6194636b83dd209e165ac105db94adb80c0de583c45",
-          "built_at": "2026-11-14T04:45:20Z",
-          "source_commit": "a983c8fa2e13e490aa745c630e674ce59609e834",
+          "bytes": 56638564,
+          "sha256": "86ff844ff6900d7a0cb57027384c95ff5a6a2e092b2f5ed039c5523f319642b9",
+          "built_at": "2026-11-15T09:49:40Z",
+          "source_commit": "b26fec64b227dc8224e996dd367bad16c9eaceb0",
           "source_dirty": false,
           "sdk": "iphonesimulator",
           "arch": "arm64",
-          "build_run": "https://github.com/atatus/ObservableCommerce/actions/runs/43557964245"
+          "build_run": "https://github.com/atatus/ObservableCommerce/actions/runs/43700932493"
         }
       }
     },
