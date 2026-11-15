@@ -8,7 +8,19 @@ name: Native crash
     direction: DOWN
 - tapOn:
     id: "diag.native_crash"
-- assertNotVisible: "Diagnostics"
+- runFlow:
+    when:
+      platform: Android
+    commands:
+      - assertNotVisible: "Diagnostics"
+# Maestro on iOS fails the step with "App crashed or stopped" once the app dies, which is the point here.
+- runFlow:
+    when:
+      platform: iOS
+    commands:
+      - assertNotVisible:
+          text: "Diagnostics"
+          optional: true
 # The SDK uploads a crash report on the next launch, not as the process dies.
 - runFlow: ../common/launch.yaml
 - runFlow: ../common/flush.yaml

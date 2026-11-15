@@ -40,9 +40,11 @@ name: Buy a product
 - inputText: "San Francisco"
 - tapOn: "State"
 - inputText: "CA"
+# Enter closes the keyboard (these fields have no submit action); on iOS it covers ZIP code.
+- pressKey: Enter
 - tapOn: "ZIP code"
 - inputText: ${['94105', '10001', '60601', '73301', '98101'][Math.floor(Math.random() * 5)]}
-- hideKeyboard
+- pressKey: Enter
 - scrollUntilVisible:
     element:
       id: "checkout.carrier"

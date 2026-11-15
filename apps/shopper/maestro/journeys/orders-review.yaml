@@ -22,7 +22,7 @@ name: Check an order and review it
       - tapOn: ${(Math.floor(Math.random() * 2) + 4) + ' stars'}
       - tapOn: "Title (optional)"
       - inputText: ${['Great value', 'Works as described', 'Would buy again', 'Solid quality'][Math.floor(Math.random() * 4)]}
-      - hideKeyboard
+      - pressKey: Enter
       - tapOn: "Submit review"
       - extendedWaitUntil:
           visible: "Thanks for your review!|You have already reviewed this product."

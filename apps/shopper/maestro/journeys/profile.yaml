@@ -8,7 +8,9 @@ name: Update the profile
 - tapOn: "Phone"
 - eraseText: 20
 - inputText: ${'+1415' + Math.floor(Math.random() * 9000000 + 1000000)}
-- hideKeyboard
+# The iOS phone pad has no Return key, so the keyboard is closed from the name field.
+- tapOn: "Full name"
+- pressKey: Enter
 - tapOn: "Save Changes"
 - extendedWaitUntil:
     visible: "Profile updated."

@@ -22,16 +22,22 @@ appId: com.atatus.oc.shopper
           id: "nav.account"
 - tapOn:
     id: "account.signin"
-- tapOn: "Email"
-- inputText: ${output.shopper}
-- tapOn: "Password"
-- inputText: ${MAESTRO_SEED_PASSWORD}
-# Enter submits through onFieldSubmitted on both platforms; iOS hideKeyboard presses Return and submits too early.
-- pressKey: Enter
-- extendedWaitUntil:
-    visible:
-      id: "account.signout"
-    timeout: 20000
+# On iOS typed text is sometimes lost (field not focused yet), so the fill is cleared and retried.
+- retry:
+    maxRetries: 2
+    commands:
+      - tapOn: "Email"
+      - eraseText: 60
+      - inputText: ${output.shopper}
+      - tapOn: "Password"
+      - eraseText: 30
+      - inputText: ${MAESTRO_SEED_PASSWORD}
+      # Enter submits through onFieldSubmitted on both platforms; iOS hideKeyboard presses Return and submits too early.
+      - pressKey: Enter
+      - extendedWaitUntil:
+          visible:
+            id: "account.signout"
+          timeout: 20000
 - tapOn:
     id: "nav.home"
 - extendedWaitUntil:
