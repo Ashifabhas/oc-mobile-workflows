@@ -8,8 +8,10 @@ name: App crash
     direction: DOWN
 - tapOn:
     id: "diag.crash"
+# Maestro on iOS can fail the step with "App crashed or stopped" once the app dies, which is the point here.
 - assertNotVisible:
     id: "diag.result"
+    optional: true
 # The SDK uploads a crash report on the next launch, not as the process dies.
 - runFlow: ../common/launch.yaml
 - runFlow: ../common/flush.yaml

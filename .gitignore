@@ -1,3 +1,6 @@
 .DS_Store
 out/
 *.log
+# MO_BUILD_STORE=release: builds are assets of the builds release, not commits.
+/apps/*/android/*.apk
+/apps/*/ios/*.app.zip

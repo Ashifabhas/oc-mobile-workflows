@@ -104,6 +104,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Fetch build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: ./scripts/fetch-build.sh ${{ matrix.app }} android
+
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -172,6 +177,11 @@ jobs:
     name: ios / ${{ matrix.app }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Fetch build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: ./scripts/fetch-build.sh ${{ matrix.app }} ios
 
       - uses: actions/setup-java@v4
         with:

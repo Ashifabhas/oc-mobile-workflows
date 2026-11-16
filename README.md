@@ -8,11 +8,13 @@ holds only build output and flows. No build carries a service URL or a key: both
 
 ```
 .
-├── manifest.json            # every published build: app id, stack, artifact, ABIs, size, sha256, source commit
+├── manifest.json            # every published build: app id, stack, artifact, ABIs, size, sha256, source commit;
+│                            # "store" says whether builds are committed (repo) or assets of the builds release
 ├── .github/workflows/
 │   └── simulate.yml         # run the flows on emulators against the live services
 ├── scripts/
 │   ├── simulate.sh          # install one app, loop its flows in random order for N minutes
+│   ├── fetch-build.sh       # put the app's build in place: from git, or downloaded from the builds release
 │   └── mask-secrets.sh      # mask the flux token and seed password in the output before it is uploaded
 └── apps/
     └── <app>/
@@ -36,7 +38,7 @@ app's `ios/` folder appears once a build has been fetched.
 ## Running a simulation
 
 `simulate` runs one Android emulator per app (x86_64 `google_apis`, Pixel 7, KVM on `ubuntu-latest`), installs the
-committed APK and loops that app's flows in random order for the given minutes against `OC_BASE_URL`
+app's APK and loops that app's flows in random order for the given minutes against `OC_BASE_URL`
 (`https://<base>/<service>-service`). A flow that fails because the emulator dropped the device is retried once; any
 other failure is recorded as a result, since backend errors and chaos are part of the simulation. The job summary lists
 every flow run, and the Maestro output (with failure screenshots) and the emulator's full `logcat.txt` (where the
@@ -90,11 +92,19 @@ make mo-sync                                     # copy these files, build every
 make mo-sync-push                                # the same, then commit (asks for the message) and push this repo
 make mo-sync-push MO_SYNC_APPS=courier           # one app
 make mo-sync-push MO_SYNC_BUILD=0                # reuse the APKs already built (flow or workflow change)
+make mo-sync-push MO_SYNC_APPS=none              # no APK build: publish an iOS build
+make mo-sync-push MO_BUILD_STORE=repo            # commit the builds here instead of the builds release (=release switches back)
 make mo-ios                                      # iOS: build merchant + shopper on a macOS runner, download the .app builds here
 ```
 
 To host it in your own GitHub account, run `make mo-sync` once, then here:
-`git init -b main && git add -A && git commit -m "initial import" && gh repo create <owner>/oc-mobile-workflows --public --source . --push`.
+`git init -b main && git add -A && git commit -m "initial import" && gh repo create <owner>/oc-mobile-workflows --public --source . --push`,
+then `make mo-sync-push MO_SYNC_BUILD=0` in ObservableCommerce to upload the builds.
+
+With `"store": "release"` in `manifest.json` the builds are not in git: each one is an asset of this repo's `builds`
+release, named `<app>-<sha256[:12]>.<ext>` and listed as `release_asset`, and every `simulate` job downloads the one
+its `manifest.json` names and checks the sha256 before installing it. With `"store": "repo"` they are committed under
+`apps/`.
 
 `manifest.json` records the ObservableCommerce commit each APK was built from and whether that app's source had
 uncommitted changes (`source_dirty`).
