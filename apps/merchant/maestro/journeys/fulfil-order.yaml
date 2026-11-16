@@ -10,7 +10,7 @@ name: Move an order through fulfilment
       id: "order.row|orders.empty"
     timeout: 30000
 - tapOn:
-    id: "orders.filter.processing"
+    id: "orders.filter.confirmed"
 - runFlow:
     when:
       visible:
@@ -29,14 +29,14 @@ name: Move an order through fulfilment
           visible:
             id: "order.result"
           timeout: 15000
-# Nothing is being packed: start packing a paid order instead.
+# No paid order to ship: start packing a new one instead (only its payment confirms it).
 - runFlow:
     when:
       visible:
         id: "orders.empty"
     commands:
       - tapOn:
-          id: "orders.filter.confirmed"
+          id: "orders.filter.pending"
       - runFlow:
           when:
             visible:
