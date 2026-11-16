@@ -9,15 +9,15 @@
       "platforms": {
         "android": {
           "artifact": "apps/courier/android/courier.apk",
-          "bytes": 21075378,
-          "sha256": "023f7a73c3bb419f4cb05ae44c750d14bc6c904ee7e867b32542ecaa3b0e9a95",
-          "built_at": "2026-10-15T01:29:18Z",
-          "source_commit": "fc5b6251476f63e37e1d87c25ae4154d1f70acf8",
+          "bytes": 21075462,
+          "sha256": "f4cb7e522520a6c810ab62fcf36ac2142a6a1303f7325bf3d03d0c6baa6d02ef",
+          "built_at": "2026-11-16T05:19:41Z",
+          "source_commit": "e6b937299daae2e7a883cb5ca210a433bc11724a",
           "source_dirty": true,
           "abis": [
             "x86_64"
           ],
-          "release_asset": "courier-023f7a73c3bb.apk"
+          "release_asset": "courier-f4cb7e522520.apk"
         }
       }
     },
@@ -29,10 +29,10 @@
       "platforms": {
         "android": {
           "artifact": "apps/manager/android/manager.apk",
-          "bytes": 9327926,
-          "sha256": "70a654fcd4d5b5aa3d9f0994479c50f7a8271290ebbd0096b48e21208b3aaa0d",
-          "built_at": "2026-10-22T05:58:55Z",
-          "source_commit": "47a12ead0cf9ce28147e1ada66f2f5fe1727d38b",
+          "bytes": 9327922,
+          "sha256": "234786269b29f4c3e90dd4824a8b1ca5fcf63f2602c57fddaf6cb5f7b0930892",
+          "built_at": "2026-11-16T05:24:08Z",
+          "source_commit": "178db4de21df3f00951f38542af14191e9401034",
           "source_dirty": false,
           "abis": [
             "arm64-v8a",
@@ -40,7 +40,7 @@
             "x86",
             "x86_64"
           ],
-          "release_asset": "manager-70a654fcd4d5.apk"
+          "release_asset": "manager-234786269b29.apk"
         }
       }
     },
@@ -52,15 +52,15 @@
       "platforms": {
         "ios": {
           "artifact": "apps/merchant/ios/merchant.app.zip",
-          "bytes": 8062643,
-          "sha256": "014ac06da0d85c4ca572ca00d78df22638c82ccb617be95a86654689674b1fb1",
-          "built_at": "2026-11-15T15:22:20Z",
-          "source_commit": "4c54221f271de68c8cd3891f94a400f24bcfd937",
+          "bytes": 8062637,
+          "sha256": "2014dd6d1b5d9c3d52f9a1e029887763b2e688ec29ce30fe3f40cd6980d1fa35",
+          "built_at": "2026-11-16T05:01:34Z",
+          "source_commit": "e6b937299daae2e7a883cb5ca210a433bc11724a",
           "source_dirty": false,
           "sdk": "iphonesimulator",
           "arch": "arm64",
-          "build_run": "https://github.com/atatus/ObservableCommerce/actions/runs/43729400992",
-          "release_asset": "merchant-014ac06da0d8.app.zip"
+          "build_run": "https://github.com/atatus/ObservableCommerce/actions/runs/43807474930",
+          "release_asset": "merchant-2014dd6d1b5d.app.zip"
         }
       }
     },
@@ -107,9 +107,9 @@
         "android": {
           "artifact": "apps/warehouse/android/warehouse.apk",
           "bytes": 12520356,
-          "sha256": "3a6477732a18a0c7559d15abf60a88854609fc47a947510053cb2af8451c5a2c",
-          "built_at": "2026-11-16T03:37:51Z",
-          "source_commit": "4c54221f271de68c8cd3891f94a400f24bcfd937",
+          "sha256": "7150c4cb5bf677eedd64ab13103b30341f776eacc18f5ddb502c9625804ce860",
+          "built_at": "2026-11-16T05:08:43Z",
+          "source_commit": "e6b937299daae2e7a883cb5ca210a433bc11724a",
           "source_dirty": false,
           "abis": [
             "arm64-v8a",
@@ -117,7 +117,7 @@
             "x86",
             "x86_64"
           ],
-          "release_asset": "warehouse-3a6477732a18.apk"
+          "release_asset": "warehouse-7150c4cb5bf6.apk"
         }
       }
     }
