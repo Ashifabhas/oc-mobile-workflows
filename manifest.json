@@ -52,15 +52,15 @@
       "platforms": {
         "ios": {
           "artifact": "apps/merchant/ios/merchant.app.zip",
-          "bytes": 8062642,
-          "sha256": "b1ea043708ece3e535fd527ea238332d0e0b256cb7348d0fdb0e2031f0304aea",
-          "built_at": "2026-11-16T11:32:55Z",
-          "source_commit": "d1e28dafb55e4bc48658e5ea709fb3b0558c8f86",
+          "bytes": 8064605,
+          "sha256": "ec7f5bd9b3f1e21e67528f2a6009fe43dceb28ee57c419493d23dfaf8b34e79b",
+          "built_at": "2026-11-18T22:22:56Z",
+          "source_commit": "06d8478427f09f0ea743a928216bcb777d1eaa62",
           "source_dirty": false,
           "sdk": "iphonesimulator",
           "arch": "arm64",
-          "build_run": "https://github.com/atatus/ObservableCommerce/actions/runs/43858574978",
-          "release_asset": "merchant-b1ea043708ec.app.zip"
+          "build_run": "https://github.com/atatus/ObservableCommerce/actions/runs/44410849111",
+          "release_asset": "merchant-ec7f5bd9b3f1.app.zip"
         }
       }
     },
