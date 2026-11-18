@@ -1,18 +1,47 @@
 appId: com.atatus.oc.shopper
 ---
-- launchApp:
-    arguments:
-      USER_SERVICE_URL: ${MAESTRO_USER_SERVICE_URL}
-      PRODUCT_SERVICE_URL: ${MAESTRO_PRODUCT_SERVICE_URL}
-      ORDER_SERVICE_URL: ${MAESTRO_ORDER_SERVICE_URL}
-      PAYMENT_SERVICE_URL: ${MAESTRO_PAYMENT_SERVICE_URL}
-      ANALYTICS_SERVICE_URL: ${MAESTRO_ANALYTICS_SERVICE_URL}
-      SHIPPING_SERVICE_URL: ${MAESTRO_SHIPPING_SERVICE_URL}
-      REVIEW_SERVICE_URL: ${MAESTRO_REVIEW_SERVICE_URL}
-      ATATUS_LICENSE_KEY: ${MAESTRO_ATATUS_LICENSE_KEY}
-      ATATUS_SITE: ${MAESTRO_ATATUS_SITE}
-      ATATUS_SERVER_URL: ${MAESTRO_ATATUS_SERVER_URL}
-      ATATUS_ENV: ${MAESTRO_ATATUS_ENV}
+- runFlow:
+    when:
+      true: ${MAESTRO_LONG != 'true'}
+    commands:
+      - launchApp:
+          arguments:
+            USER_SERVICE_URL: ${MAESTRO_USER_SERVICE_URL}
+            PRODUCT_SERVICE_URL: ${MAESTRO_PRODUCT_SERVICE_URL}
+            ORDER_SERVICE_URL: ${MAESTRO_ORDER_SERVICE_URL}
+            PAYMENT_SERVICE_URL: ${MAESTRO_PAYMENT_SERVICE_URL}
+            ANALYTICS_SERVICE_URL: ${MAESTRO_ANALYTICS_SERVICE_URL}
+            SHIPPING_SERVICE_URL: ${MAESTRO_SHIPPING_SERVICE_URL}
+            REVIEW_SERVICE_URL: ${MAESTRO_REVIEW_SERVICE_URL}
+            ATATUS_LICENSE_KEY: ${MAESTRO_ATATUS_LICENSE_KEY}
+            ATATUS_SITE: ${MAESTRO_ATATUS_SITE}
+            ATATUS_SERVER_URL: ${MAESTRO_ATATUS_SERVER_URL}
+            ATATUS_ENV: ${MAESTRO_ATATUS_ENV}
+- runFlow:
+    when:
+      true: ${MAESTRO_LONG == 'true'}
+    commands:
+      # Android back on the root screen would close the app, so it only pops while the tab bar is hidden.
+      - repeat:
+          while:
+            notVisible:
+              id: "nav.home"
+          times: 5
+          commands:
+            - runFlow:
+                when:
+                  platform: Android
+                commands:
+                  - back
+            - runFlow:
+                when:
+                  platform: iOS
+                commands:
+                  - tapOn:
+                      text: "Back"
+                      optional: true
+      - tapOn:
+          id: "nav.home"
 - extendedWaitUntil:
     visible:
       id: "home.ready"

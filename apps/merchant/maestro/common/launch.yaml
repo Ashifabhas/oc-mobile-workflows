@@ -1,16 +1,46 @@
 appId: com.atatus.oc.merchant
 ---
-- launchApp:
-    arguments:
-      USER_SERVICE_URL: ${MAESTRO_USER_SERVICE_URL}
-      PRODUCT_SERVICE_URL: ${MAESTRO_PRODUCT_SERVICE_URL}
-      ORDER_SERVICE_URL: ${MAESTRO_ORDER_SERVICE_URL}
-      REVIEW_SERVICE_URL: ${MAESTRO_REVIEW_SERVICE_URL}
-      ANALYTICS_SERVICE_URL: ${MAESTRO_ANALYTICS_SERVICE_URL}
-      ATATUS_LICENSE_KEY: ${MAESTRO_ATATUS_LICENSE_KEY}
-      ATATUS_SITE: ${MAESTRO_ATATUS_SITE}
-      ATATUS_SERVER_URL: ${MAESTRO_ATATUS_SERVER_URL}
-      ATATUS_ENV: ${MAESTRO_ATATUS_ENV}
+- runFlow:
+    when:
+      true: ${MAESTRO_LONG != 'true'}
+    commands:
+      - launchApp:
+          arguments:
+            USER_SERVICE_URL: ${MAESTRO_USER_SERVICE_URL}
+            PRODUCT_SERVICE_URL: ${MAESTRO_PRODUCT_SERVICE_URL}
+            ORDER_SERVICE_URL: ${MAESTRO_ORDER_SERVICE_URL}
+            REVIEW_SERVICE_URL: ${MAESTRO_REVIEW_SERVICE_URL}
+            ANALYTICS_SERVICE_URL: ${MAESTRO_ANALYTICS_SERVICE_URL}
+            ATATUS_LICENSE_KEY: ${MAESTRO_ATATUS_LICENSE_KEY}
+            ATATUS_SITE: ${MAESTRO_ATATUS_SITE}
+            ATATUS_SERVER_URL: ${MAESTRO_ATATUS_SERVER_URL}
+            ATATUS_ENV: ${MAESTRO_ATATUS_ENV}
+- runFlow:
+    when:
+      true: ${MAESTRO_LONG == 'true'}
+    commands:
+      # A failed save leaves its sheet open over the tabs.
+      - runFlow:
+          when:
+            visible: "Cancel"
+          commands:
+            - tapOn: "Cancel"
+      # The tab bar stays visible over pushed screens and re-tapping the current tab does not pop them.
+      - repeat:
+          while:
+            visible:
+              id: "nav.back"
+          times: 5
+          commands:
+            - tapOn:
+                id: "nav.back"
+      - runFlow:
+          when:
+            visible:
+              id: "tab.catalogue"
+          commands:
+            - tapOn:
+                id: "tab.catalogue"
 - extendedWaitUntil:
     visible:
       id: "login.submit|tab.catalogue"

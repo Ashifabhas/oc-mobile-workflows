@@ -1,5 +1,8 @@
 appId: com.atatus.oc.shopper
 name: Create an account
+# It signs out and continues as a new user with no orders, so a long journey never picks it.
+tags:
+  - short-only
 ---
 - runFlow: ../common/launch.yaml
 - tapOn:

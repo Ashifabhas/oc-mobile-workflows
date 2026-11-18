@@ -1,14 +1,37 @@
 appId: com.atatus.oc.warehouse
 ---
-- launchApp:
-    arguments:
-      USER_SERVICE_URL: ${MAESTRO_USER_SERVICE_URL}
-      PRODUCT_SERVICE_URL: ${MAESTRO_PRODUCT_SERVICE_URL}
-      INVENTORY_SERVICE_URL: ${MAESTRO_INVENTORY_SERVICE_URL}
-      ATATUS_LICENSE_KEY: ${MAESTRO_ATATUS_LICENSE_KEY}
-      ATATUS_SITE: ${MAESTRO_ATATUS_SITE}
-      ATATUS_SERVER_URL: ${MAESTRO_ATATUS_SERVER_URL}
-      ATATUS_ENV: ${MAESTRO_ATATUS_ENV}
+- runFlow:
+    when:
+      true: ${MAESTRO_LONG != 'true'}
+    commands:
+      - launchApp:
+          arguments:
+            USER_SERVICE_URL: ${MAESTRO_USER_SERVICE_URL}
+            PRODUCT_SERVICE_URL: ${MAESTRO_PRODUCT_SERVICE_URL}
+            INVENTORY_SERVICE_URL: ${MAESTRO_INVENTORY_SERVICE_URL}
+            ATATUS_LICENSE_KEY: ${MAESTRO_ATATUS_LICENSE_KEY}
+            ATATUS_SITE: ${MAESTRO_ATATUS_SITE}
+            ATATUS_SERVER_URL: ${MAESTRO_ATATUS_SERVER_URL}
+            ATATUS_ENV: ${MAESTRO_ATATUS_ENV}
+- runFlow:
+    when:
+      true: ${MAESTRO_LONG == 'true'}
+    commands:
+      # Android back on the root screen would close the app, so it only pops while neither root is shown.
+      - repeat:
+          while:
+            notVisible:
+              id: "login.submit|tab.low-stock"
+          times: 5
+          commands:
+            - back
+      - runFlow:
+          when:
+            visible:
+              id: "tab.low-stock"
+          commands:
+            - tapOn:
+                id: "tab.low-stock"
 - extendedWaitUntil:
     visible:
       id: "login.submit|tab.low-stock"

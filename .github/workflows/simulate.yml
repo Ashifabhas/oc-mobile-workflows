@@ -10,8 +10,16 @@ on:
         description: iOS apps to simulate on a macOS runner, space-separated (merchant, shopper)
         default: ""
       duration:
-        description: Minutes of flows per app
+        description: Minutes for the whole run (1-300), also the long journey's target
         default: "30"
+      long_app:
+        description: Optional long journey, android:<shopper|warehouse> or ios:<merchant|shopper>; that app does not also run short, and flows/include_failures do not apply to it
+        default: ""
+      long_kind:
+        description: Kind of long journey
+        type: choice
+        options: [work, boot-crash]
+        default: work
       include_failures:
         description: Also run the deliberate-failure flows (errors, slow screens, crashes)
         type: boolean
@@ -35,8 +43,9 @@ jobs:
   plan:
     runs-on: ubuntu-latest
     outputs:
-      apps: ${{ steps.plan.outputs.apps }}
-      ios_apps: ${{ steps.plan.outputs.ios_apps }}
+      android_jobs: ${{ steps.plan.outputs.android_jobs }}
+      ios_jobs: ${{ steps.plan.outputs.ios_jobs }}
+      long_kind: ${{ steps.plan.outputs.long_kind }}
       duration: ${{ steps.plan.outputs.duration }}
       include_failures: ${{ steps.plan.outputs.include_failures }}
       flows: ${{ steps.plan.outputs.flows }}
@@ -50,6 +59,8 @@ jobs:
           PAYLOAD_APPS: ${{ toJSON(github.event.client_payload.apps) }}
           IOS_APPS: ${{ inputs.ios_apps || github.event.client_payload.ios_apps || '' }}
           DURATION: ${{ inputs.duration || github.event.client_payload.duration || '30' }}
+          LONG_APP: ${{ inputs.long_app || github.event.client_payload.long_app || '' }}
+          LONG_KIND: ${{ inputs.long_kind || github.event.client_payload.long_kind || 'work' }}
           # format() keeps an explicit false, which || would discard.
           INCLUDE_FAILURES_INPUT: ${{ format('{0}', inputs.include_failures) }}
           INCLUDE_FAILURES_PAYLOAD: ${{ format('{0}', github.event.client_payload.include_failures) }}
@@ -71,11 +82,27 @@ jobs:
             done
             (( ${#out[@]} )) && printf '%s\n' "${out[@]}" | jq -R . | jq -sc . || echo '[]'
           }
+          long_android=""
+          long_ios=""
+          case "$LONG_APP" in
+            "") ;;
+            android:shopper|android:warehouse) long_android="${LONG_APP#*:}" ;;
+            ios:merchant|ios:shopper) long_ios="${LONG_APP#*:}" ;;
+            *) echo "::error::long_app must be empty, android:<shopper|warehouse> or ios:<merchant|shopper>"; exit 1 ;;
+          esac
+          if [[ "$LONG_KIND" != "work" && "$LONG_KIND" != "boot-crash" ]]; then
+            echo "::error::long_kind must be work or boot-crash"; exit 1
+          fi
+          job_list() {
+            jq -c --arg long "$2" 'map(select(. != $long) | {app: ., mode: "short"}) | if $long == "" then . else [{app: $long, mode: "long"}] + . end' <<< "$1"
+          }
           [[ "$APPS" == "none" ]] && APPS=""
           apps="$(pick "shopper warehouse courier manager" "$APPS")"
           ios_apps="$(pick "merchant shopper" "$IOS_APPS")"
-          if [[ "$apps" == "[]" && "$ios_apps" == "[]" ]]; then
-            echo "::error::select at least one Android or iOS app"; exit 1
+          android_jobs="$(job_list "$apps" "$long_android")"
+          ios_jobs="$(job_list "$ios_apps" "$long_ios")"
+          if [[ "$android_jobs" == "[]" && "$ios_jobs" == "[]" ]]; then
+            echo "::error::select at least one Android or iOS app, or a long_app"; exit 1
           fi
           if ! [[ "$DURATION" =~ ^[0-9]+$ ]] || (( DURATION < 1 || DURATION > 300 )); then
             echo "::error::duration must be 1-300 minutes"; exit 1
@@ -83,8 +110,9 @@ jobs:
           include="${INCLUDE_FAILURES_INPUT:-${INCLUDE_FAILURES_PAYLOAD:-true}}"
           [[ "$include" == "false" ]] || include=true
           {
-            echo "apps=$apps"
-            echo "ios_apps=$ios_apps"
+            echo "android_jobs=$android_jobs"
+            echo "ios_jobs=$ios_jobs"
+            echo "long_kind=$LONG_KIND"
             echo "duration=$DURATION"
             echo "include_failures=$include"
             echo "flows=$FLOWS"
@@ -93,13 +121,13 @@ jobs:
 
   android:
     needs: plan
-    if: needs.plan.outputs.apps != '[]'
+    if: needs.plan.outputs.android_jobs != '[]'
     runs-on: ubuntu-latest
-    timeout-minutes: 330
+    timeout-minutes: 355
     strategy:
       fail-fast: false
       matrix:
-        app: ${{ fromJSON(needs.plan.outputs.apps) }}
+        include: ${{ fromJSON(needs.plan.outputs.android_jobs) }}
     name: android / ${{ matrix.app }}
     steps:
       - uses: actions/checkout@v4
@@ -137,6 +165,8 @@ jobs:
           SIM_INCLUDE_FAILURES: ${{ needs.plan.outputs.include_failures }}
           SIM_FLOWS: ${{ needs.plan.outputs.flows }}
           SIM_OUT: ${{ github.workspace }}/out
+          SIM_MODE: ${{ matrix.mode }}
+          SIM_KIND: ${{ matrix.mode == 'long' && needs.plan.outputs.long_kind || '' }}
         with:
           api-level: ${{ needs.plan.outputs.api_level }}
           target: google_apis
@@ -167,13 +197,13 @@ jobs:
 
   ios:
     needs: plan
-    if: needs.plan.outputs.ios_apps != '[]'
+    if: needs.plan.outputs.ios_jobs != '[]'
     runs-on: macos-26
-    timeout-minutes: 330
+    timeout-minutes: 355
     strategy:
       fail-fast: false
       matrix:
-        app: ${{ fromJSON(needs.plan.outputs.ios_apps) }}
+        include: ${{ fromJSON(needs.plan.outputs.ios_jobs) }}
     name: ios / ${{ matrix.app }}
     steps:
       - uses: actions/checkout@v4
@@ -219,6 +249,8 @@ jobs:
           SIM_INCLUDE_FAILURES: ${{ needs.plan.outputs.include_failures }}
           SIM_FLOWS: ${{ needs.plan.outputs.flows }}
           SIM_OUT: ${{ github.workspace }}/out
+          SIM_MODE: ${{ matrix.mode }}
+          SIM_KIND: ${{ matrix.mode == 'long' && needs.plan.outputs.long_kind || '' }}
           MAESTRO_DRIVER_STARTUP_TIMEOUT: "180000"
         run: ./scripts/simulate.sh ${{ matrix.app }} ${{ needs.plan.outputs.duration }} ios
 

@@ -10,14 +10,14 @@
         "android": {
           "artifact": "apps/courier/android/courier.apk",
           "bytes": 21075434,
-          "sha256": "6bff98138b3755d96f4a4d4fce60f4422a18183fd431cde17dcc8278ed29b2af",
-          "built_at": "2026-11-18T03:12:59Z",
-          "source_commit": "0cb8defb7f4be32f15f4bae0eb8e8da0620e32f9",
+          "sha256": "e2ff1053a8c33686a481de52efccbbb7d55f65670026122beb87f066568057a5",
+          "built_at": "2026-11-18T20:49:00Z",
+          "source_commit": "c64d5d19de832073ccfbd5ae495d369edd4c85f1",
           "source_dirty": false,
           "abis": [
             "x86_64"
           ],
-          "release_asset": "courier-6bff98138b37.apk"
+          "release_asset": "courier-e2ff1053a8c3.apk"
         }
       }
     },
@@ -30,9 +30,9 @@
         "android": {
           "artifact": "apps/manager/android/manager.apk",
           "bytes": 9327922,
-          "sha256": "234786269b29f4c3e90dd4824a8b1ca5fcf63f2602c57fddaf6cb5f7b0930892",
-          "built_at": "2026-11-16T05:24:08Z",
-          "source_commit": "178db4de21df3f00951f38542af14191e9401034",
+          "sha256": "b6f2dbc585befdff2bc9f824c10516ff3f4211d95e0bf83d173e1495c1737743",
+          "built_at": "2026-11-18T20:52:24Z",
+          "source_commit": "b7b4211d1dde8e8c7b52b0e5e59ba6654e5b8a35",
           "source_dirty": false,
           "abis": [
             "arm64-v8a",
@@ -40,7 +40,7 @@
             "x86",
             "x86_64"
           ],
-          "release_asset": "manager-234786269b29.apk"
+          "release_asset": "manager-b6f2dbc585be.apk"
         }
       }
     },
@@ -73,16 +73,16 @@
         "android": {
           "artifact": "apps/shopper/android/shopper.apk",
           "bytes": 22839842,
-          "sha256": "3edfaea6d04b17b5dc1f1b7011084c2fda7c53fe124a49a8e86b1f5591bc0235",
-          "built_at": "2026-11-15T10:07:25Z",
-          "source_commit": "0efecd246a1eb225edf01613aaabd42646aa8518",
+          "sha256": "b7ae0f9a4e37b561f23024f91fd0035e2390aae658f8c16bda83d523d00cec85",
+          "built_at": "2026-11-18T20:41:53Z",
+          "source_commit": "7629b51fea6248718ae02cccebe54be373017813",
           "source_dirty": false,
           "abis": [
             "arm64-v8a",
             "armeabi-v7a",
             "x86_64"
           ],
-          "release_asset": "shopper-3edfaea6d04b.apk"
+          "release_asset": "shopper-b7ae0f9a4e37.apk"
         },
         "ios": {
           "artifact": "apps/shopper/ios/shopper.app.zip",
@@ -107,9 +107,9 @@
         "android": {
           "artifact": "apps/warehouse/android/warehouse.apk",
           "bytes": 12520356,
-          "sha256": "7150c4cb5bf677eedd64ab13103b30341f776eacc18f5ddb502c9625804ce860",
-          "built_at": "2026-11-16T05:08:43Z",
-          "source_commit": "e6b937299daae2e7a883cb5ca210a433bc11724a",
+          "sha256": "b06ef61b34155ef00135a3805498dfae4957acbcffec8c3ba242532f45a408c8",
+          "built_at": "2026-11-18T20:22:24Z",
+          "source_commit": "7629b51fea6248718ae02cccebe54be373017813",
           "source_dirty": false,
           "abis": [
             "arm64-v8a",
@@ -117,7 +117,7 @@
             "x86",
             "x86_64"
           ],
-          "release_asset": "warehouse-7150c4cb5bf6.apk"
+          "release_asset": "warehouse-b06ef61b3415.apk"
         }
       }
     }
