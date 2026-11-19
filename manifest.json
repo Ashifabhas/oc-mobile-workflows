@@ -10,14 +10,14 @@
         "android": {
           "artifact": "apps/courier/android/courier.apk",
           "bytes": 21075434,
-          "sha256": "e2ff1053a8c33686a481de52efccbbb7d55f65670026122beb87f066568057a5",
-          "built_at": "2026-11-18T20:49:00Z",
-          "source_commit": "c64d5d19de832073ccfbd5ae495d369edd4c85f1",
+          "sha256": "da30c5ee4d81e96d880e0ae4cd928b9c765361b0d1482a0b64e9f0d248ffa17a",
+          "built_at": "2026-11-19T21:19:16Z",
+          "source_commit": "48cec7d214af7c76460bebc4f20a62a1c0528be9",
           "source_dirty": false,
           "abis": [
             "x86_64"
           ],
-          "release_asset": "courier-e2ff1053a8c3.apk"
+          "release_asset": "courier-da30c5ee4d81.apk"
         }
       }
     },
@@ -30,9 +30,9 @@
         "android": {
           "artifact": "apps/manager/android/manager.apk",
           "bytes": 9327922,
-          "sha256": "b6f2dbc585befdff2bc9f824c10516ff3f4211d95e0bf83d173e1495c1737743",
-          "built_at": "2026-11-18T20:52:24Z",
-          "source_commit": "b7b4211d1dde8e8c7b52b0e5e59ba6654e5b8a35",
+          "sha256": "985d2247132e0b521d982aaa7262e1f23204d3812fab017f4d2b0209f0e4509c",
+          "built_at": "2026-11-19T21:22:35Z",
+          "source_commit": "48cec7d214af7c76460bebc4f20a62a1c0528be9",
           "source_dirty": false,
           "abis": [
             "arm64-v8a",
@@ -40,7 +40,7 @@
             "x86",
             "x86_64"
           ],
-          "release_asset": "manager-b6f2dbc585be.apk"
+          "release_asset": "manager-985d2247132e.apk"
         }
       }
     },
@@ -52,15 +52,15 @@
       "platforms": {
         "ios": {
           "artifact": "apps/merchant/ios/merchant.app.zip",
-          "bytes": 8064605,
-          "sha256": "ec7f5bd9b3f1e21e67528f2a6009fe43dceb28ee57c419493d23dfaf8b34e79b",
-          "built_at": "2026-11-18T22:22:56Z",
-          "source_commit": "06d8478427f09f0ea743a928216bcb777d1eaa62",
+          "bytes": 8064672,
+          "sha256": "bf53a34dac22f0d940acb38c633b6f21090c51fd03d59e1edee2c2ebaf5c71af",
+          "built_at": "2026-11-19T20:53:19Z",
+          "source_commit": "48cec7d214af7c76460bebc4f20a62a1c0528be9",
           "source_dirty": false,
           "sdk": "iphonesimulator",
           "arch": "arm64",
-          "build_run": "https://github.com/atatus/ObservableCommerce/actions/runs/44410849111",
-          "release_asset": "merchant-ec7f5bd9b3f1.app.zip"
+          "build_run": "https://github.com/atatus/ObservableCommerce/actions/runs/44613055883",
+          "release_asset": "merchant-bf53a34dac22.app.zip"
         }
       }
     },
@@ -73,16 +73,16 @@
         "android": {
           "artifact": "apps/shopper/android/shopper.apk",
           "bytes": 22839842,
-          "sha256": "b7ae0f9a4e37b561f23024f91fd0035e2390aae658f8c16bda83d523d00cec85",
-          "built_at": "2026-11-18T20:41:53Z",
-          "source_commit": "7629b51fea6248718ae02cccebe54be373017813",
+          "sha256": "9a835ab1bca819c5f18d4484787bd104486d4a0316de5a15905da5a216b04346",
+          "built_at": "2026-11-19T21:11:41Z",
+          "source_commit": "48cec7d214af7c76460bebc4f20a62a1c0528be9",
           "source_dirty": false,
           "abis": [
             "arm64-v8a",
             "armeabi-v7a",
             "x86_64"
           ],
-          "release_asset": "shopper-b7ae0f9a4e37.apk"
+          "release_asset": "shopper-9a835ab1bca8.apk"
         },
         "ios": {
           "artifact": "apps/shopper/ios/shopper.app.zip",
@@ -107,9 +107,9 @@
         "android": {
           "artifact": "apps/warehouse/android/warehouse.apk",
           "bytes": 12520356,
-          "sha256": "b06ef61b34155ef00135a3805498dfae4957acbcffec8c3ba242532f45a408c8",
-          "built_at": "2026-11-18T20:22:24Z",
-          "source_commit": "7629b51fea6248718ae02cccebe54be373017813",
+          "sha256": "df6ec4958b53e64d124791b937d643e0b392de8e4fa40e0c2543f5f5aceb8549",
+          "built_at": "2026-11-19T21:13:36Z",
+          "source_commit": "48cec7d214af7c76460bebc4f20a62a1c0528be9",
           "source_dirty": false,
           "abis": [
             "arm64-v8a",
@@ -117,7 +117,7 @@
             "x86",
             "x86_64"
           ],
-          "release_asset": "warehouse-b06ef61b3415.apk"
+          "release_asset": "warehouse-df6ec4958b53.apk"
         }
       }
     }
